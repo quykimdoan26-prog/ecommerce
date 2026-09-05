@@ -1,4 +1,4 @@
-# 🛍️ ShopNow - Nền Tảng Bán Hàng Online
+# 🛍️ Quý shop- Nền Tảng Bán Hàng Online
 
 Một dự án web bán hàng chuyên nghiệp được xây dựng với **Spring Boot 3.1.5**, **Thymeleaf**, **Bootstrap 5**, và **MySQL**.
 
