@@ -2,7 +2,6 @@ package com.ecommerce.service;
 
 import com.ecommerce.entity.Order;
 import com.ecommerce.entity.OrderItem;
-import com.ecommerce.entity.Product;
 import com.ecommerce.repository.OrderRepository;
 import com.ecommerce.repository.OrderItemRepository;
 import com.ecommerce.repository.ProductRepository;
