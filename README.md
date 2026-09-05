@@ -189,4 +189,4 @@ MIT License - Tự do sử dụng cho mục đích thương mại & cá nhân
 
 ---
 
-**Tạo bởi ShopNow Team | Version 1.0.0**
+**Tạo bởi Quý shopTeam | Version 1.0.0**
