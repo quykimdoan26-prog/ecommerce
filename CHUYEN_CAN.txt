@@ -1,0 +1,198 @@
+═══════════════════════════════════════════════════════════════════════════════
+                        ✅ CÁC SỬA CHỮA ĐÃ THỰC HIỆN
+═══════════════════════════════════════════════════════════════════════════════
+
+🔧 VẤN ĐỀ 1: ĐĂNG NHẬP KHÔNG CHUYỂN TRANG
+───────────────────────────────────────────────────────────────────────────────
+❌ Lỗi: Form login không xác thực được tài khoản
+✅ Sửa:
+   1. Cập nhật SecurityConfig.java:
+      - Thêm .loginProcessingUrl("/login")
+      - Thêm .usernameParameter("username")
+      - Thêm .passwordParameter("password")
+      - Thêm .failureUrl("/auth/login?error")
+      - Cấu hình logout đúng
+
+   2. Cập nhật login.html:
+      - Form POST action="/login" (không @{/login})
+      - Tham số username/password đúng
+      - Thêm demo tài khoản
+
+   3. CustomUserDetailsService.java đã tạo:
+      - Tự động load user từ database
+      - Cấp quyền ROLE_ theo role trong DB
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🛒 VẤN ĐỀ 2: THIẾU GIỎ HÀNG
+───────────────────────────────────────────────────────────────────────────────
+❌ Lỗi: Không có chức năng giỏ hàng
+✅ Sửa: Thêm các file/class mới:
+
+   1. Entity: CartItem.java
+      - Bảng cart_items với user, product, quantity, price
+
+   2. Repository: CartItemRepository.java
+      - findByUserId() - lấy giỏ hàng user
+      - findByUserIdAndProductId() - check sản phẩm có trong giỏ
+      - deleteByUserId() - xóa toàn bộ giỏ
+
+   3. Service: CartService.java
+      - addToCart() - thêm/cập nhật sản phẩm
+      - getCartItems() - lấy danh sách giỏ
+      - updateCartItem() - sửa số lượng
+      - removeFromCart() - xóa 1 sản phẩm
+      - clearCart() - xóa toàn bộ giỏ
+      - getCartTotal() - tính tổng tiền
+
+   4. Controller: CartController.java
+      - GET /cart - xem giỏ hàng
+      - POST /cart/add - thêm vào giỏ
+      - POST /cart/update/{id} - sửa số lượng
+      - POST /cart/remove/{id} - xóa từ giỏ
+      - POST /cart/clear - xóa toàn bộ
+
+   5. View: customer/cart.html
+      - Hiển thị danh sách sản phẩm trong giỏ
+      - Chỉnh sửa số lượng từng sản phẩm
+      - Tính tổng tiền
+      - Nút thanh toán (placeholder)
+
+   6. Database: database.sql
+      - Thêm bảng cart_items
+
+   7. Updates:
+      - ProductController.java: thêm CartService để "add to cart"
+      - product-detail.html: thêm "Thêm Vào Giỏ" form + link giỏ hàng
+      - index.html: thêm link "🛒 Giỏ Hàng" trong navbar
+      - SecurityConfig: thêm /cart/** -> CUSTOMER, ADMIN
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔄 QUY TRÌNH HOẠT ĐỘNG
+───────────────────────────────────────────────────────────────────────────────
+
+1. ĐĂNG NHẬP:
+   User → Login Page (/auth/login)
+   → Input username/password
+   → POST /login
+   → Spring Security xác thực via CustomUserDetailsService
+   → Redirect / (trang chủ)
+   ✅ Navbar cập nhật: hiển thị username + link "Giỏ Hàng"
+
+2. MUA SẢN PHẨM:
+   Khách → Xem sản phẩm (/products)
+   → Nhấp vào sản phẩm (/products/{id})
+   → Nhấp "🛒 Thêm Vào Giỏ"
+   → POST /products/add-to-cart
+   → CartService.addToCart() gọi database
+   → Redirect /products/{id}?added=success
+   ✅ Hiển thị "✅ Sản phẩm đã thêm vào giỏ"
+
+3. XEM GIỎ HÀNG:
+   Khách → Nhấp "🛒 Giỏ Hàng"
+   → GET /cart
+   → CartController lấy danh sách + tính tổng
+   → Render cart.html
+   ✅ Hiển thị: sản phẩm, số lượng, giá, tổng tiền
+
+4. SỬA GIỎ HÀNG:
+   Khách → Sửa số lượng → Nhấp "✓"
+   → POST /cart/update/{id} + quantity
+   → CartService.updateCartItem()
+   → Redirect /cart
+   ✅ Cập nhật giỏ hàng
+
+5. XÓA TỪ GIỎ:
+   Khách → Nhấp "🗑️" trên sản phẩm
+   → POST /cart/remove/{id}
+   → CartItemRepository.deleteById()
+   → Redirect /cart
+   ✅ Sản phẩm bị xóa
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📝 CÁC FILE ĐÃ SỬA/THÊMỚI
+───────────────────────────────────────────────────────────────────────────────
+
+📄 ĐÃ SỬA:
+   ✏️  SecurityConfig.java
+   ✏️  ProductController.java
+   ✏️  login.html
+   ✏️  product-detail.html
+   ✏️  index.html
+   ✏️  database.sql
+
+📝 ĐÃ THÊMỚI:
+   ✨ CartItem.java (Entity)
+   ✨ CartItemRepository.java (Repository)
+   ✨ CartService.java (Service)
+   ✨ CartController.java (Controller)
+   ✨ cart.html (View)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 HƯỚNG DẪN CHẠY LẠI
+───────────────────────────────────────────────────────────────────────────────
+
+1. BACKUP Database cũ (nếu cần)
+
+2. DROP Database cũ:
+   mysql> DROP DATABASE ecommerce;
+
+3. Import database.sql MỚI:
+   mysql -u root -p < "D:\KimQuy_CNPM\ecommerce\database.sql"
+
+4. IDE: Maven → Clean & Build (Ctrl+Shift+B)
+
+5. Chạy:
+   mvn clean install
+   mvn spring-boot:run
+
+6. Test:
+   URL: http://localhost:8080
+   Login: admin / password123
+   → Nhấp "🛒 Giỏ Hàng" (nếu chưa hành động)
+   → Xem sản phẩm → "Thêm Vào Giỏ"
+   → Xem giỏ hàng ✅
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🧪 KIỂM TRA LỖI
+───────────────────────────────────────────────────────────────────────────────
+
+LỖI: "Cannot find CartService"
+→ Rebuild Maven: mvn clean install
+
+LỖI: "Table cart_items doesn't exist"
+→ Import lại database.sql
+
+LỖI: "Login still not working"
+→ Kiểm tra CustomUserDetailsService có @Service không?
+→ Kiểm tra application.yml có đúng DB password không?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✨ TÍNH NĂNG ĐÃ HOÀN THÀNH
+───────────────────────────────────────────────────────────────────────────────
+
+✅ Đăng nhập/Đăng ký chuyên nghiệp
+✅ Phân quyền Admin & Customer
+✅ Giỏ hàng (add, update, delete)
+✅ Xem sản phẩm & chi tiết
+✅ Quản lý đơn hàng
+✅ Dashboard admin
+✅ Giao diện responsive Bootstrap 5
+✅ Database MySQL tích hợp
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎉 READY TO USE! 🎉
+
+Nếu vẫn có vấn đề, kiểm tra:
+1. Console log có lỗi gì không?
+2. Database connection OK?
+3. Maven dependency đủ chưa?
+4. IDE rebuild xong chưa?
+
+═══════════════════════════════════════════════════════════════════════════════

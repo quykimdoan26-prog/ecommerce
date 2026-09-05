@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn Hàng Của Tôi - Quý Shop</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .order-card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 5px solid #667eea; }
+        .status-badge { border-radius: 20px; padding: 5px 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🛍️ ShopNow</a>
+            <div class="ms-auto">
+                <a href="/" class="btn btn-light btn-sm">← Trang Chủ</a>
+                <form action="/logout" method="post" style="display: inline;">
+                    <button class="btn btn-outline-light btn-sm" type="submit">Đăng Xuất</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <h1 class="mb-4">📦 Đơn Hàng Của Tôi</h1>
+        
+        <div th:if="${#lists.isEmpty(orders)}" class="alert alert-info">
+            Bạn chưa có đơn hàng nào. <a href="/products">Mua sắm ngay</a>
+        </div>
+
+        <div th:each="order : ${orders}" class="order-card">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>#Đơn Hàng <span th:text="${order.id}"></span></h5>
+                    <p class="text-muted">Ngày: <span th:text="${#calendars.format(new java.util.Date(order.createdAt), 'dd/MM/yyyy')}"></span></p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span class="status-badge" 
+                          th:classappend="${order.status == 'PENDING' ? 'bg-warning' : order.status == 'CONFIRMED' ? 'bg-info' : 'bg-success'}"
+                          th:text="${order.status}"></span>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-8">
+                    <p><strong>Địa chỉ giao:</strong> <span th:text="${order.shippingAddress}"></span></p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <h6>Tổng tiền: <span th:text="'₫' + ${#numbers.formatInteger(order.totalAmount, 0, 'COMMA')}"></span></h6>
+                    <a th:href="'/orders/' + ${order.id}" class="btn btn-primary btn-sm">Xem Chi Tiết</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
