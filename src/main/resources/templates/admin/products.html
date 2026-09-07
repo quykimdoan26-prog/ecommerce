@@ -1,74 +1,375 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Sản Phẩm - Quý Shop</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Quản lý sản phẩm · Quý Shop Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .sidebar a { color: white; text-decoration: none; display: block; padding: 10px 15px; margin: 5px 0; border-radius: 8px; transition: 0.3s; }
-        .sidebar a:hover { background: rgba(255,255,255,0.2); }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 0; margin-bottom: 30px; }
-        .table { background: white; border-radius: 8px; overflow: hidden; }
-        .btn-sm { border-radius: 6px; }
+        :root {
+            --ink: #1C2430;
+            --ink-soft: #4B5361;
+            --cream: #FAF7F2;
+            --sand: #EDE6D9;
+            --sand-line: #DCD2BF;
+            --gold: #B8873D;
+            --gold-deep: #96692A;
+            --clay: #B0402C;
+            --sage: #5C6E5A;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--ink);
+            background: var(--cream);
+        }
+
+        a { color: inherit; }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 232px 1fr;
+            min-height: 100vh;
+        }
+
+        /* ---------- Sidebar (shared) ---------- */
+        .sidebar {
+            background: var(--ink);
+            padding: 28px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-mark {
+            display: flex;
+            align-items: baseline;
+            gap: 9px;
+            text-decoration: none;
+            margin-bottom: 8px;
+            padding: 0 6px;
+        }
+
+        .brand-mark .tag {
+            width: 10px;
+            height: 10px;
+            border: 1.5px solid var(--gold);
+            border-radius: 2px;
+            transform: rotate(45deg);
+            position: relative;
+            top: -1px;
+        }
+
+        .brand-mark span {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--cream);
+        }
+
+        .sidebar-tag {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: var(--gold);
+            padding: 0 6px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+        }
+
+        .sidebar-nav a {
+            font-size: 14.5px;
+            color: rgba(250, 247, 242, 0.72);
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 6px;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .sidebar-nav a:hover { background: rgba(250, 247, 242, 0.06); color: var(--cream); }
+
+        .sidebar-nav a.active {
+            background: rgba(184, 135, 61, 0.15);
+            color: var(--cream);
+            font-weight: 600;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(250, 247, 242, 0.1);
+            margin: 16px 6px;
+        }
+
+        .sidebar-nav a.exit { color: rgba(250, 247, 242, 0.55); }
+
+        .btn-logout {
+            width: 100%;
+            margin-top: 8px;
+            padding: 10px 12px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            background: var(--cream);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover { background: #EDE6D9; }
+
+        /* ---------- Main ---------- */
+        .main { display: flex; flex-direction: column; min-width: 0; }
+
+        .topbar {
+            padding: 32px 40px;
+            border-bottom: 1px solid var(--sand-line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .topbar h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 26px;
+            font-weight: 500;
+            margin: 0 0 6px;
+        }
+
+        .topbar p {
+            font-size: 14.5px;
+            color: var(--ink-soft);
+            margin: 0;
+        }
+
+        .btn-add {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--cream);
+            background: var(--ink);
+            padding: 11px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.15s ease;
+        }
+
+        .btn-add:hover { background: #2A3444; }
+
+        .content { padding: 28px 40px 60px; }
+
+        /* ---------- Table ---------- */
+        .table-card {
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 10px;
+            overflow: hidden;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 960px;
+        }
+
+        thead th {
+            text-align: left;
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            color: var(--ink-soft);
+            padding: 14px 18px;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sand-line);
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--sand-line);
+            vertical-align: top;
+        }
+
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: #FBFAF7; }
+
+        .id-cell { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+        .name-cell { font-weight: 600; }
+
+        .desc-cell {
+            max-width: 260px;
+            color: var(--ink-soft);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .desc-link {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--gold-deep);
+            text-decoration: none;
+        }
+
+        .desc-link:hover { text-decoration: underline; }
+
+        .amount { font-family: 'Fraunces', serif; font-weight: 600; white-space: nowrap; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .status-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-badge.on { background: #F2F5EF; color: #3F4E3D; }
+        .status-badge.on::before { background: var(--sage); }
+
+        .status-badge.off { background: #FBF0ED; color: #7A2E1D; }
+        .status-badge.off::before { background: var(--clay); }
+
+        .action-cell {
+            display: flex;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .action-cell form { margin: 0; }
+
+        .btn-edit,
+        .btn-delete {
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 7px 13px;
+            cursor: pointer;
+            text-decoration: none;
+            border: 1px solid var(--sand-line);
+            transition: border-color 0.15s ease, color 0.15s ease;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            color: var(--ink);
+            background: #fff;
+        }
+
+        .btn-edit:hover { border-color: var(--gold); color: var(--gold-deep); }
+
+        .btn-delete {
+            color: var(--clay);
+            background: #fff;
+        }
+
+        .btn-delete:hover { border-color: var(--clay); background: #FBF0ED; }
+
+        @media (max-width: 860px) {
+            .layout { grid-template-columns: 1fr; }
+            .topbar, .content { padding-left: 24px; padding-right: 24px; }
+            .topbar { flex-direction: column; align-items: flex-start; }
+        }
     </style>
 </head>
 <body>
-    <div class="row no-gutters">
+    <div class="layout">
         <!-- Sidebar -->
-        <div class="col-md-2 sidebar">
-            <h4 class="text-white mb-4">📊 Admin</h4>
-            <a href="/admin/dashboard">Dashboard</a>
-            <a href="/admin/products">Quản Lý Sản Phẩm</a>
-            <a href="/admin/orders">Quản Lý Đơn Hàng</a>
-            <a href="/">Về Trang Chủ</a>
-            <hr class="bg-white">
-            <form action="/logout" method="post">
-                <button class="btn btn-light w-100" type="submit">Đăng Xuất</button>
-            </form>
-        </div>
+        <aside class="sidebar">
+            <a class="brand-mark" href="/">
+                <span class="tag"></span>
+                <span>Quý Shop</span>
+            </a>
+            <p class="sidebar-tag">QUẢN TRỊ</p>
 
-        <!-- Main Content -->
-        <div class="col-md-10">
-            <div class="header">
-                <div class="container">
-                    <h1>📦 Quản Lý Sản Phẩm</h1>
+            <nav class="sidebar-nav">
+                <a href="/admin/dashboard">Dashboard</a>
+                <a href="/admin/products" class="active">Quản lý sản phẩm</a>
+                <a href="/admin/orders">Quản lý đơn hàng</a>
+                <a href="/admin/users" sec:authorize="hasRole('ADMIN')">Tài Khoản Khách Hàng</a>
+
+                <div class="sidebar-divider"></div>
+                <a href="/" class="exit">Về trang chủ</a>
+            </nav>
+
+            <form action="/logout" method="post">
+                <button class="btn-logout" type="submit">Đăng xuất</button>
+            </form>
+        </aside>
+
+        <!-- Main -->
+        <div class="main">
+            <div class="topbar">
+                <div>
+                    <h1>Quản lý sản phẩm</h1>
+                    <p>Thêm, chỉnh sửa và theo dõi toàn bộ sản phẩm.</p>
                 </div>
+                <a href="/admin/products/add" class="btn-add" sec:authorize="hasRole('ADMIN')">Thêm sản phẩm mới</a>
             </div>
 
-            <div class="container mt-4 mb-4">
-                <a href="/admin/products/add" class="btn btn-success mb-3">➕ Thêm Sản Phẩm Mới</a>
-                
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
+            <div class="content">
+                <div class="table-card">
+                    <table>
+                        <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Tên Sản Phẩm</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Mô tả</th>
                                 <th>Giá</th>
-                                <th>Số Lượng</th>
-                                <th>Danh Mục</th>
-                                <th>Trạng Thái</th>
-                                <th>Hành Động</th>
+                                <th>Số lượng</th>
+                                <th>Danh mục</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="product : ${products}">
-                                <td th:text="${product.id}"></td>
-                                <td th:text="${product.name}"></td>
-                                <td th:text="'₫' + ${#numbers.formatInteger(product.price, 0, 'COMMA')}"></td>
+                                <td class="id-cell" th:text="${product.id}"></td>
+                                <td class="name-cell" th:text="${product.name}"></td>
+                                <td>
+                                    <div class="desc-cell" th:text="${product.description}"></div>
+                                    <a th:href="'/admin/products/view/' + ${product.id}" class="desc-link">Xem chi tiết</a>
+                                </td>
+                                <td class="amount" th:text="'₫' + ${#numbers.formatInteger(product.price, 0, 'COMMA')}"></td>
                                 <td th:text="${product.quantity}"></td>
                                 <td th:text="${product.category.name}"></td>
                                 <td>
-                                    <span class="badge" th:classappend="${product.status ? 'bg-success' : 'bg-danger'}" 
-                                          th:text="${product.status ? 'Hoạt Động' : 'Tắt'}"></span>
+                                    <span class="status-badge" th:classappend="${product.status ? 'on' : 'off'}"
+                                          th:text="${product.status ? 'Hoạt động' : 'Tắt'}"></span>
                                 </td>
-                                <td>
-                                    <a th:href="'/admin/products/edit/' + ${product.id}" class="btn btn-info btn-sm">✏️ Sửa</a>
-                                    <form th:action="'/admin/products/delete/' + ${product.id}" method="post" style="display: inline;">
-                                        <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Xác nhận xóa?')">🗑️ Xóa</button>
+                                <td class="action-cell" sec:authorize="hasRole('ADMIN')">
+                                    <a th:href="'/admin/products/edit/' + ${product.id}" class="btn-edit">Sửa</a>
+                                    <form th:action="'/admin/products/delete/' + ${product.id}" method="post">
+                                        <button class="btn-delete" type="submit" onclick="return confirm('Xác nhận xóa?')">Xóa</button>
                                     </form>
                                 </td>
                             </tr>
@@ -78,7 +379,5 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

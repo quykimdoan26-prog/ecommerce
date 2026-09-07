@@ -44,6 +44,25 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public User updateStatus(Long id, Boolean status) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tài khoản"));
+        user.setStatus(status);
+        user.setUpdatedAt(System.currentTimeMillis());
+        return userRepository.save(user);
+    }
+
+    public User updateRole(Long id, String role) {
+        if (!List.of("CUSTOMER", "STAFF", "ADMIN").contains(role)) {
+            throw new IllegalArgumentException("Vai trò không hợp lệ");
+        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tài khoản"));
+        user.setRole(role);
+        user.setUpdatedAt(System.currentTimeMillis());
+        return userRepository.save(user);
+    }
+
     public boolean verifyPassword(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }

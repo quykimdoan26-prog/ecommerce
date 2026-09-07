@@ -1,82 +1,331 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết Đơn Hàng - Quý Shop</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title th:text="'Đơn hàng #' + ${order.id} + ' · Quý Shop'">Chi tiết đơn hàng · Quý Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .detail-card { background: white; padding: 30px; border-radius: 12px; margin-bottom: 20px; }
-        .item-row { border-bottom: 1px solid #eee; padding: 15px 0; }
-        .item-row:last-child { border-bottom: none; }
+        :root {
+            --ink: #1C2430;
+            --ink-soft: #4B5361;
+            --cream: #FAF7F2;
+            --sand: #EDE6D9;
+            --sand-line: #DCD2BF;
+            --gold: #B8873D;
+            --gold-deep: #96692A;
+            --sage: #5C6E5A;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--ink);
+            background: var(--cream);
+        }
+
+        a { color: inherit; }
+
+        /* ---------- Navbar ---------- */
+        .nav { background: var(--ink); }
+
+        .nav-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-mark {
+            display: flex;
+            align-items: baseline;
+            gap: 9px;
+            text-decoration: none;
+        }
+
+        .brand-mark .tag {
+            width: 10px;
+            height: 10px;
+            border: 1.5px solid var(--gold);
+            border-radius: 2px;
+            transform: rotate(45deg);
+            position: relative;
+            top: -1px;
+        }
+
+        .brand-mark span {
+            font-family: 'Fraunces', serif;
+            font-size: 19px;
+            font-weight: 500;
+            color: var(--cream);
+        }
+
+        .nav-back {
+            font-size: 14px;
+            color: rgba(250, 247, 242, 0.75);
+            text-decoration: none;
+        }
+
+        .nav-back:hover { color: var(--cream); }
+
+        /* ---------- Page ---------- */
+        .wrap {
+            max-width: 940px;
+            margin: 0 auto;
+            padding: 48px 24px 96px;
+        }
+
+        .page-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .page-head h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(24px, 3vw, 30px);
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .status-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-badge.status-pending { background: #FBF3E6; color: var(--gold-deep); }
+        .status-badge.status-pending::before { background: var(--gold); }
+
+        .status-badge.status-confirmed { background: #EEF1F5; color: #3A4E63; }
+        .status-badge.status-confirmed::before { background: #5C7999; }
+
+        .status-badge.status-done { background: #F2F5EF; color: #3F4E3D; }
+        .status-badge.status-done::before { background: var(--sage); }
+
+        /* Card */
+        .card-block {
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 10px;
+            padding: 28px 30px;
+            margin-bottom: 22px;
+        }
+
+        .card-block h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 0 20px;
+        }
+
+        /* Info grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px 40px;
+        }
+
+        .info-item .label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gold-deep);
+            margin-bottom: 5px;
+        }
+
+        .info-item .value {
+            font-size: 14.5px;
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        /* Items */
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--sand-line);
+        }
+
+        .item-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .item-row:first-child { padding-top: 0; }
+
+        .item-thumb {
+            width: 56px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: var(--sand);
+            flex-shrink: 0;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-info strong {
+            display: block;
+            font-size: 14.5px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .item-info p {
+            font-size: 13px;
+            color: var(--ink-soft);
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .item-qty {
+            font-size: 13.5px;
+            color: var(--ink-soft);
+            width: 70px;
+            flex-shrink: 0;
+        }
+
+        .item-unit {
+            font-size: 13.5px;
+            color: var(--ink-soft);
+            width: 100px;
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .item-total {
+            font-family: 'Fraunces', serif;
+            font-size: 15px;
+            font-weight: 600;
+            width: 110px;
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        /* Summary */
+        .summary-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: baseline;
+            gap: 16px;
+        }
+
+        .summary-row .summary-label {
+            font-size: 14.5px;
+            color: var(--ink-soft);
+        }
+
+        .summary-row .summary-total {
+            font-family: 'Fraunces', serif;
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--gold-deep);
+        }
+
+        @media (max-width: 700px) {
+            .info-grid { grid-template-columns: 1fr; gap: 18px; }
+            .item-row { flex-wrap: wrap; }
+            .item-info { flex-basis: calc(100% - 74px); }
+            .item-qty, .item-unit, .item-total { width: auto; text-align: left; }
+            .item-qty { padding-left: 74px; }
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Quý Shop</a>
-            <div class="ms-auto">
-                <a href="/orders" class="btn btn-light btn-sm">← Quay Lại</a>
-            </div>
+    <!-- Navbar -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a class="brand-mark" href="/">
+                <span class="tag"></span>
+                <span>Quý Shop</span>
+            </a>
+            <a href="/orders" class="nav-back">&larr; Quay lại</a>
         </div>
     </nav>
 
-    <div class="container my-5">
-        <h1 class="mb-4">Đơn Hàng #<span th:text="${order.id}"></span></h1>
+    <div class="wrap">
+        <div class="page-head">
+            <h1>Đơn hàng #<span th:text="${order.id}"></span></h1>
+            <span class="status-badge"
+                  th:classappend="${order.status == 'PENDING' ? 'status-pending' : order.status == 'CONFIRMED' ? 'status-confirmed' : 'status-done'}"
+                  th:text="${order.status}"></span>
+        </div>
 
-        <div class="detail-card">
-            <h5>📦 Thông Tin Đơn Hàng</h5>
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>Trạng Thái:</strong> <span class="badge bg-success" th:text="${order.status}"></span></p>
-                    <p><strong>Khách Hàng:</strong> <span th:text="${order.user.fullName}"></span></p>
-                    <p><strong>Email:</strong> <span th:text="${order.user.email}"></span></p>
+        <!-- Order info -->
+        <div class="card-block">
+            <h2>Thông tin đơn hàng</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">Khách hàng</span>
+                    <span class="value" th:text="${order.user.fullName}"></span>
                 </div>
-                <div class="col-md-6">
-                    <p><strong>Ngày Tạo:</strong> <span th:text="${#calendars.format(new java.util.Date(order.createdAt), 'dd/MM/yyyy HH:mm')}"></span></p>
-                    <p><strong>Địa Chỉ Giao:</strong> <span th:text="${order.shippingAddress}"></span></p>
-                    <p><strong>Ghi Chú:</strong> <span th:text="${order.notes ?: 'N/A'}"></span></p>
+                <div class="info-item">
+                    <span class="label">Ngày tạo</span>
+                    <span class="value" th:text="${#calendars.format(new java.util.Date(order.createdAt), 'dd/MM/yyyy HH:mm')}"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Email</span>
+                    <span class="value" th:text="${order.user.email}"></span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Địa chỉ giao</span>
+                    <span class="value" th:text="${order.shippingAddress}"></span>
+                </div>
+                <div class="info-item" style="grid-column: 1 / -1;">
+                    <span class="label">Ghi chú</span>
+                    <span class="value" th:text="${order.notes ?: 'Không có'}"></span>
                 </div>
             </div>
         </div>
 
-        <div class="detail-card">
-            <h5>📋 Các Sản Phẩm</h5>
+        <!-- Items -->
+        <div class="card-block">
+            <h2>Các sản phẩm</h2>
             <div th:each="item : ${items}" class="item-row">
-                <div class="row align-items-center">
-                    <div class="col-md-2">
-                        <img th:src="${item.product.imageUrl}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px;">
-                    </div>
-                    <div class="col-md-4">
-                        <strong th:text="${item.product.name}"></strong>
-                        <p class="text-muted small" th:text="${item.product.description}"></p>
-                    </div>
-                    <div class="col-md-2">
-                        <p>Số Lượng: <strong th:text="${item.quantity}"></strong></p>
-                    </div>
-                    <div class="col-md-2">
-                        <p>Giá: <strong th:text="'₫' + ${#numbers.formatInteger(item.unitPrice, 0, 'COMMA')}"></strong></p>
-                    </div>
-                    <div class="col-md-2 text-end">
-                        <p>Tổng: <strong th:text="'₫' + ${#numbers.formatInteger(item.totalPrice, 0, 'COMMA')}"></strong></p>
-                    </div>
+                <img th:src="${item.product.imageUrl}" class="item-thumb" th:alt="${item.product.name}">
+                <div class="item-info">
+                    <strong th:text="${item.product.name}"></strong>
+                    <p th:text="${item.product.description}"></p>
                 </div>
+                <span class="item-qty">SL: <span th:text="${item.quantity}"></span></span>
+                <span class="item-unit" th:text="'₫' + ${#numbers.formatInteger(item.unitPrice, 0, 'COMMA')}"></span>
+                <span class="item-total" th:text="'₫' + ${#numbers.formatInteger(item.totalPrice, 0, 'COMMA')}"></span>
             </div>
         </div>
 
-        <div class="detail-card">
-            <div class="row">
-                <div class="col-md-8"></div>
-                <div class="col-md-4">
-                    <h5 class="text-end">Tổng Tiền Đơn Hàng</h5>
-                    <h3 class="text-end text-success" th:text="'₫' + ${#numbers.formatInteger(order.totalAmount, 0, 'COMMA')}"></h3>
-                </div>
+        <!-- Total -->
+        <div class="card-block">
+            <div class="summary-row">
+                <span class="summary-label">Tổng tiền đơn hàng</span>
+                <span class="summary-total" th:text="'₫' + ${#numbers.formatInteger(order.totalAmount, 0, 'COMMA')}"></span>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

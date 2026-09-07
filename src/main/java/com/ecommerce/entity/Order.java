@@ -27,6 +27,12 @@ public class Order {
     private String shippingAddress;
     private String notes;
 
+    @Column(nullable = false)
+    private String paymentMethod = "COD"; // COD, QR
+
+    @Column(nullable = false)
+    private String paymentStatus = "UNPAID"; // UNPAID, PAID
+
     private Long createdAt = System.currentTimeMillis();
     private Long updatedAt = System.currentTimeMillis();
 }

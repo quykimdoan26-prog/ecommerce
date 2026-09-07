@@ -1,97 +1,354 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm/Sửa Sản Phẩm - Quý Shop</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Thêm/Sửa sản phẩm · Quý Shop Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .sidebar a { color: white; text-decoration: none; display: block; padding: 10px 15px; margin: 5px 0; border-radius: 8px; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 0; margin-bottom: 30px; }
-        .form-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .form-control, .form-select { border-radius: 8px; }
-        .form-control:focus, .form-select:focus { border-color: #667eea; box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); }
+        :root {
+            --ink: #1C2430;
+            --ink-soft: #4B5361;
+            --cream: #FAF7F2;
+            --sand: #EDE6D9;
+            --sand-line: #DCD2BF;
+            --gold: #B8873D;
+            --gold-deep: #96692A;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--ink);
+            background: var(--cream);
+        }
+
+        a { color: inherit; }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 232px 1fr;
+            min-height: 100vh;
+        }
+
+        /* ---------- Sidebar (shared) ---------- */
+        .sidebar {
+            background: var(--ink);
+            padding: 28px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-mark {
+            display: flex;
+            align-items: baseline;
+            gap: 9px;
+            text-decoration: none;
+            margin-bottom: 8px;
+            padding: 0 6px;
+        }
+
+        .brand-mark .tag {
+            width: 10px;
+            height: 10px;
+            border: 1.5px solid var(--gold);
+            border-radius: 2px;
+            transform: rotate(45deg);
+            position: relative;
+            top: -1px;
+        }
+
+        .brand-mark span {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--cream);
+        }
+
+        .sidebar-tag {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: var(--gold);
+            padding: 0 6px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+        }
+
+        .sidebar-nav a {
+            font-size: 14.5px;
+            color: rgba(250, 247, 242, 0.72);
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 6px;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .sidebar-nav a:hover { background: rgba(250, 247, 242, 0.06); color: var(--cream); }
+
+        .sidebar-nav a.active {
+            background: rgba(184, 135, 61, 0.15);
+            color: var(--cream);
+            font-weight: 600;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(250, 247, 242, 0.1);
+            margin: 16px 6px;
+        }
+
+        .sidebar-nav a.exit { color: rgba(250, 247, 242, 0.55); }
+
+        .btn-logout {
+            width: 100%;
+            margin-top: 8px;
+            padding: 10px 12px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            background: var(--cream);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover { background: #EDE6D9; }
+
+        /* ---------- Main ---------- */
+        .main { display: flex; flex-direction: column; min-width: 0; }
+
+        .topbar {
+            padding: 32px 40px;
+            border-bottom: 1px solid var(--sand-line);
+        }
+
+        .topbar h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 26px;
+            font-weight: 500;
+            margin: 0 0 6px;
+        }
+
+        .topbar p {
+            font-size: 14.5px;
+            color: var(--ink-soft);
+            margin: 0;
+        }
+
+        .content { padding: 36px 40px 60px; }
+
+        /* ---------- Form ---------- */
+        .form-card {
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 10px;
+            padding: 36px;
+            max-width: 560px;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .field { margin-bottom: 20px; }
+
+        .field label {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--ink-soft);
+            margin-bottom: 7px;
+        }
+
+        .field .req { color: var(--gold-deep); }
+
+        .field input,
+        .field textarea,
+        .field select {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 6px;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .field textarea { resize: vertical; }
+
+        .field input::placeholder { color: #B3AC9E; }
+
+        .field input:focus,
+        .field textarea:focus,
+        .field select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184, 135, 61, 0.18);
+        }
+
+        .field select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234B5361' stroke-width='1.5' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 13px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--cream);
+            background: var(--ink);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .btn-save:hover { background: #2A3444; }
+
+        .btn-cancel {
+            display: block;
+            text-align: center;
+            width: 100%;
+            padding: 12px;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 6px;
+            text-decoration: none;
+            transition: border-color 0.15s ease, color 0.15s ease;
+        }
+
+        .btn-cancel:hover { border-color: var(--gold); color: var(--gold-deep); }
+
+        @media (max-width: 860px) {
+            .layout { grid-template-columns: 1fr; }
+            .topbar, .content { padding-left: 24px; padding-right: 24px; }
+            .form-card { padding: 26px; }
+        }
+
+        @media (max-width: 520px) {
+            .field-row { grid-template-columns: 1fr; gap: 0; }
+        }
     </style>
 </head>
 <body>
-    <div class="row no-gutters">
-        <div class="col-md-2 sidebar">
-            <h4 class="text-white mb-4">📊 Admin</h4>
-            <a href="/admin/dashboard">Dashboard</a>
-            <a href="/admin/products">Quản Lý Sản Phẩm</a>
-            <a href="/admin/orders">Quản Lý Đơn Hàng</a>
-            <a href="/">Về Trang Chủ</a>
-            <hr class="bg-white">
-            <form action="/logout" method="post">
-                <button class="btn btn-light w-100" type="submit">Đăng Xuất</button>
-            </form>
-        </div>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a class="brand-mark" href="/">
+                <span class="tag"></span>
+                <span>Quý Shop</span>
+            </a>
+            <p class="sidebar-tag">QUẢN TRỊ</p>
 
-        <div class="col-md-10">
-            <div class="header">
-                <div class="container">
-                    <h1>➕ Thêm/Sửa Sản Phẩm</h1>
-                </div>
+            <nav class="sidebar-nav">
+                <a href="/admin/dashboard">Dashboard</a>
+                <a href="/admin/products" class="active">Quản lý sản phẩm</a>
+                <a href="/admin/orders">Quản lý đơn hàng</a>
+                <a href="/admin/users">Tài khoản khách hàng</a>
+
+                <div class="sidebar-divider"></div>
+                <a href="/" class="exit">Về trang chủ</a>
+            </nav>
+
+            <form action="/logout" method="post">
+                <button class="btn-logout" type="submit">Đăng xuất</button>
+            </form>
+        </aside>
+
+        <!-- Main -->
+        <div class="main">
+            <div class="topbar">
+                <h1>Thêm / sửa sản phẩm</h1>
+                <p>Điền thông tin sản phẩm để thêm mới hoặc cập nhật.</p>
             </div>
 
-            <div class="container mt-4 mb-5" style="max-width: 600px;">
+            <div class="content">
                 <div class="form-card">
                     <form method="post" th:action="@{/admin/products/save}" th:object="${product}">
                         <input type="hidden" th:field="*{id}">
-                        
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Tên Sản Phẩm *</label>
-                            <input type="text" class="form-control" th:field="*{name}" required>
+
+                        <div class="field">
+                            <label for="name">Tên sản phẩm <span class="req">*</span></label>
+                            <input type="text" id="name" th:field="*{name}" placeholder="Nhập tên sản phẩm" required>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Mô Tả</label>
-                            <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
+                        <div class="field">
+                            <label for="description">Mô tả</label>
+                            <textarea id="description" th:field="*{description}" rows="3" placeholder="Mô tả ngắn về sản phẩm"></textarea>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="price" class="form-label">Giá (₫) *</label>
-                            <input type="number" class="form-control" th:field="*{price}" step="1000" min="0" required>
+                        <div class="field-row">
+                            <div class="field">
+                                <label for="price">Giá (₫) <span class="req">*</span></label>
+                                <input type="number" id="price" th:field="*{price}" step="1000" min="0" placeholder="0" required>
+                            </div>
+                            <div class="field">
+                                <label for="quantity">Số lượng <span class="req">*</span></label>
+                                <input type="number" id="quantity" th:field="*{quantity}" min="0" placeholder="0" required>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="quantity" class="form-label">Số Lượng *</label>
-                            <input type="number" class="form-control" th:field="*{quantity}" min="0" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="category_id" class="form-label">Danh Mục *</label>
-                            <select class="form-select" name="category.id" required>
-                                <option value="">-- Chọn Danh Mục --</option>
+                        <div class="field">
+                            <label for="category_id">Danh mục <span class="req">*</span></label>
+                            <select id="category_id" name="category.id" required>
+                                <option value="">— Chọn danh mục —</option>
                                 <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
                             </select>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="imageUrl" class="form-label">URL Hình Ảnh</label>
-                            <input type="text" class="form-control" th:field="*{imageUrl}" placeholder="https://via.placeholder.com/300">
+                        <div class="field">
+                            <label for="imageUrl">URL hình ảnh</label>
+                            <input type="text" id="imageUrl" th:field="*{imageUrl}" placeholder="https://...">
                         </div>
 
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Trạng Thái</label>
-                            <select class="form-select" th:field="*{status}">
-                                <option value="true">Hoạt Động</option>
+                        <div class="field">
+                            <label for="status">Trạng thái</label>
+                            <select id="status" th:field="*{status}">
+                                <option value="true">Hoạt động</option>
                                 <option value="false">Tắt</option>
                             </select>
                         </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg">💾 Lưu Sản Phẩm</button>
-                            <a href="/admin/products" class="btn btn-secondary">❌ Hủy</a>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-save">Lưu sản phẩm</button>
+                            <a href="/admin/products" class="btn-cancel">Hủy</a>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

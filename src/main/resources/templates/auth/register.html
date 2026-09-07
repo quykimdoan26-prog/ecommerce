@@ -1,56 +1,383 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Ký - Quý Shop</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Đăng ký · Quý Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; }
-        .register-container { max-width: 500px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .register-container h2 { text-align: center; color: #667eea; margin-bottom: 30px; font-weight: bold; }
-        .form-control { border-radius: 8px; border: 1px solid #ddd; }
-        .form-control:focus { border-color: #667eea; box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); }
-        .btn-register { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 10px; font-weight: bold; border-radius: 8px; }
-        .text-center a { color: #667eea; text-decoration: none; }
+        :root {
+            --ink: #1C2430;
+            --ink-soft: #4B5361;
+            --cream: #FAF7F2;
+            --sand: #EDE6D9;
+            --sand-line: #DCD2BF;
+            --gold: #B8873D;
+            --gold-deep: #96692A;
+            --clay: #B0402C;
+            --sage: #5C6E5A;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--ink);
+            background: var(--cream);
+        }
+
+        .layout {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+        }
+
+        /* ---------- Left: brand panel ---------- */
+        .brand-panel {
+            position: relative;
+            background: var(--ink);
+            color: var(--cream);
+            padding: 56px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .brand-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                repeating-linear-gradient(
+                    115deg,
+                    rgba(184, 135, 61, 0.08) 0px,
+                    rgba(184, 135, 61, 0.08) 1px,
+                    transparent 1px,
+                    transparent 88px
+                );
+            pointer-events: none;
+        }
+
+        .brand-mark {
+            position: relative;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .brand-mark .tag {
+            width: 11px;
+            height: 11px;
+            border: 1.5px solid var(--gold);
+            border-radius: 2px;
+            transform: rotate(45deg);
+            flex-shrink: 0;
+            position: relative;
+            top: -1px;
+        }
+
+        .brand-mark span {
+            font-family: 'Fraunces', serif;
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        .brand-copy {
+            position: relative;
+            max-width: 340px;
+        }
+
+        .brand-copy h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(28px, 3.6vw, 40px);
+            font-weight: 500;
+            line-height: 1.22;
+            margin: 0 0 20px;
+        }
+
+        .brand-copy p {
+            font-size: 15px;
+            line-height: 1.65;
+            color: rgba(250, 247, 242, 0.72);
+            margin: 0 0 28px;
+        }
+
+        .brand-perks {
+            position: relative;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .brand-perks li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14px;
+            color: rgba(250, 247, 242, 0.85);
+            line-height: 1.5;
+        }
+
+        .brand-perks li::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            margin-top: 7px;
+            background: var(--gold);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .brand-foot {
+            position: relative;
+            font-size: 13px;
+            color: rgba(250, 247, 242, 0.5);
+        }
+
+        /* ---------- Right: form panel ---------- */
+        .form-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 24px;
+        }
+
+        .form-card {
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .form-card > .eyebrow {
+            font-size: 13px;
+            color: var(--ink-soft);
+            margin: 0 0 6px;
+        }
+
+        .form-card h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 27px;
+            font-weight: 500;
+            margin: 0 0 28px;
+        }
+
+        .notice {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 12px 14px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            border: 1px solid transparent;
+        }
+
+        .notice::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .notice.error { background: #FBF0ED; border-color: #EFD3C8; color: #7A2E1D; }
+        .notice.error::before { background: var(--clay); }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .field { margin-bottom: 18px; }
+
+        .field label {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--ink-soft);
+            margin-bottom: 7px;
+        }
+
+        .field .optional {
+            font-weight: 400;
+            color: #A39C8C;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 6px;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .field input::placeholder { color: #B3AC9E; }
+
+        .field input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184, 135, 61, 0.18);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            margin-top: 8px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--cream);
+            background: var(--ink);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .btn-submit:hover { background: #2A3444; }
+        .btn-submit:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+        .fine-print {
+            font-size: 13px;
+            color: var(--ink-soft);
+            line-height: 1.55;
+            margin: 16px 0 0;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 26px 0 20px;
+            color: #B3AC9E;
+            font-size: 13px;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--sand-line);
+        }
+
+        .signup-line {
+            text-align: center;
+            font-size: 14.5px;
+            color: var(--ink-soft);
+            margin: 0;
+        }
+
+        .signup-line a {
+            color: var(--gold-deep);
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+        }
+
+        .signup-line a:hover { border-bottom-color: var(--gold-deep); }
+
+        @media (max-width: 860px) {
+            .layout { grid-template-columns: 1fr; }
+            .brand-panel {
+                padding: 32px 28px;
+                min-height: 180px;
+            }
+            .brand-copy h1 { font-size: 24px; }
+            .brand-copy p, .brand-perks, .brand-foot { display: none; }
+            .form-panel { padding: 32px 24px 56px; }
+            .field-row { grid-template-columns: 1fr; gap: 0; }
+        }
     </style>
 </head>
 <body>
-    <div class="register-container">
-        <h2>✨ Đăng Ký Tài Khoản</h2>
-        
-        <form method="post" th:object="${user}">
-            <div class="mb-3">
-                <label for="username" class="form-label">Tên Đăng Nhập</label>
-                <input type="text" class="form-control" th:field="*{username}" required>
+    <div class="layout">
+        <!-- Brand panel -->
+        <aside class="brand-panel">
+            <div class="brand-mark">
+                <span class="tag"></span>
+                <span>Quý Shop</span>
             </div>
-            <div class="mb-3">
-                <label for="fullName" class="form-label">Họ và Tên</label>
-                <input type="text" class="form-control" th:field="*{fullName}" required>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" th:field="*{email}" required>
-            </div>
-            <div class="mb-3">
-                <label for="phone" class="form-label">Số Điện Thoại</label>
-                <input type="text" class="form-control" th:field="*{phone}">
-            </div>
-            <div class="mb-3">
-                <label for="address" class="form-label">Địa Chỉ</label>
-                <input type="text" class="form-control" th:field="*{address}">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Mật Khẩu</label>
-                <input type="password" class="form-control" th:field="*{password}" required>
-            </div>
-            <button type="submit" class="btn btn-register w-100 btn-primary">Đăng Ký</button>
-        </form>
 
-        <hr>
-        <p class="text-center mt-3">Đã có tài khoản? <a href="/auth/login">Đăng nhập</a></p>
+            <div class="brand-copy">
+                <h1>Tạo tài khoản,<br>bắt đầu mua sắm.</h1>
+                <p>Chỉ mất một phút để thiết lập tài khoản và mở khoá toàn bộ trải nghiệm mua sắm tại Quý Shop.</p>
+                <ul class="brand-perks">
+                    <li>Theo dõi đơn hàng theo thời gian thực</li>
+                    <li>Lưu địa chỉ giao hàng cho lần sau</li>
+                    <li>Ưu đãi và mã giảm giá dành riêng cho thành viên</li>
+                </ul>
+            </div>
+
+            <div class="brand-foot">Thông tin của bạn được bảo mật theo tiêu chuẩn của Quý Shop.</div>
+        </aside>
+
+        <!-- Form panel -->
+        <main class="form-panel">
+            <div class="form-card">
+                <p class="eyebrow">Chỉ mất một phút</p>
+                <h2>Tạo tài khoản mới</h2>
+
+                <div th:if="${param.error}" class="notice error">
+                    Đã có lỗi xảy ra. Vui lòng kiểm tra lại thông tin.
+                </div>
+
+                <form method="post" th:object="${user}">
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="username">Tên đăng nhập</label>
+                            <input type="text" id="username" th:field="*{username}" placeholder="ten.dangnhap" required>
+                        </div>
+                        <div class="field">
+                            <label for="fullName">Họ và tên</label>
+                            <input type="text" id="fullName" th:field="*{fullName}" placeholder="Nguyễn Văn A" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" th:field="*{email}" placeholder="ban@vidu.com" required>
+                    </div>
+
+                    <div class="field-row">
+                        <div class="field">
+                            <label for="phone">Số điện thoại <span class="optional">(không bắt buộc)</span></label>
+                            <input type="text" id="phone" th:field="*{phone}" placeholder="09xx xxx xxx">
+                        </div>
+                        <div class="field">
+                            <label for="password">Mật khẩu</label>
+                            <input type="password" id="password" th:field="*{password}" placeholder="Tối thiểu 8 ký tự" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="address">Địa chỉ <span class="optional">(không bắt buộc)</span></label>
+                        <input type="text" id="address" th:field="*{address}" placeholder="Số nhà, đường, phường/xã, tỉnh/thành">
+                    </div>
+
+                    <button type="submit" class="btn-submit">Tạo tài khoản</button>
+                    <p class="fine-print">Bằng việc đăng ký, bạn đồng ý với điều khoản dịch vụ và chính sách bảo mật của Quý Shop.</p>
+                </form>
+
+                <div class="divider">hoặc</div>
+                <p class="signup-line">Đã có tài khoản? <a href="/auth/login">Đăng nhập</a></p>
+            </div>
+        </main>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

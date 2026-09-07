@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý đơn hàng · Quý Shop Admin</title>
+    <title>Tài khoản khách hàng · Quý Shop Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -16,6 +16,8 @@
             --sand-line: #DCD2BF;
             --gold: #B8873D;
             --gold-deep: #96692A;
+            --clay: #B0402C;
+            --sage: #5C6E5A;
         }
 
         * { box-sizing: border-box; }
@@ -36,7 +38,7 @@
             min-height: 100vh;
         }
 
-        /* ---------- Sidebar (shared with dashboard) ---------- */
+        /* ---------- Sidebar ---------- */
         .sidebar {
             background: var(--ink);
             padding: 28px 20px;
@@ -127,7 +129,7 @@
 
         .btn-logout:hover { background: #EDE6D9; }
 
-        /* ---------- Main ---------- */
+        /* ---------- Main & Topbar ---------- */
         .main { display: flex; flex-direction: column; min-width: 0; }
 
         .topbar {
@@ -148,7 +150,7 @@
             margin: 0;
         }
 
-        .content { padding: 32px 40px 60px; }
+        .content { padding: 28px 40px 60px; }
 
         /* ---------- Table ---------- */
         .table-card {
@@ -163,7 +165,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
-            min-width: 880px;
+            min-width: 800px;
         }
 
         thead th {
@@ -187,36 +189,8 @@
         tbody tr:last-child td { border-bottom: none; }
         tbody tr:hover { background: #FBFAF7; }
 
-        .order-id { font-weight: 600; color: var(--ink); }
-
-        .amount { font-family: 'Fraunces', serif; font-weight: 600; white-space: nowrap; }
-
-        .payment-method-pill {
-            display: inline-block;
-            font-size: 11.5px;
-            font-weight: 600;
-            color: var(--ink-soft);
-            background: var(--sand);
-            padding: 3px 10px;
-            border-radius: 12px;
-            margin-bottom: 8px;
-        }
-
-        select {
-            font-family: inherit;
-            font-size: 13px;
-            color: var(--ink);
-            background: #fff;
-            border: 1px solid var(--sand-line);
-            border-radius: 6px;
-            padding: 7px 10px;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(184, 135, 61, 0.18);
-        }
+        .name-cell { font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+        .sub-text { font-size: 12.5px; color: var(--ink-soft); }
 
         .status-badge {
             display: inline-flex;
@@ -236,31 +210,70 @@
             border-radius: 50%;
         }
 
-        .status-badge.status-pending { background: #FBF3E6; color: var(--gold-deep); }
-        .status-badge.status-pending::before { background: var(--gold); }
+        .status-badge.on { background: #F2F5EF; color: #3F4E3D; }
+        .status-badge.on::before { background: var(--sage); }
 
-        .status-badge.status-done { background: #F2F5EF; color: #3F4E3D; }
-        .status-badge.status-done::before { background: #5C6E5A; }
+        .status-badge.off { background: #FBF0ED; color: #7A2E1D; }
+        .status-badge.off::before { background: var(--clay); }
 
-        .action-cell { display: flex; gap: 8px; }
+        /* ---------- Inline Forms ---------- */
+        .role-form {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+        }
 
-        .btn-save {
+        .select-role {
+            font-family: inherit;
+            font-size: 13px;
+            padding: 6px 8px;
+            border: 1px solid var(--sand-line);
+            border-radius: 6px;
+            background: #fff;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.15s ease;
+        }
+
+        .select-role:focus { border-color: var(--gold); }
+
+        .btn-mini {
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 10px;
+            border: 1px solid var(--sand-line);
+            border-radius: 6px;
+            background: var(--cream);
+            color: var(--ink);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-mini:hover { background: var(--sand); }
+
+        .action-cell form { margin: 0; }
+
+        .btn-action {
             font-family: inherit;
             font-size: 13px;
             font-weight: 600;
-            color: var(--cream);
-            background: var(--ink);
-            border: none;
             border-radius: 6px;
-            padding: 7px 14px;
+            padding: 7px 13px;
             cursor: pointer;
-            transition: background 0.15s ease;
-            white-space: nowrap;
+            border: 1px solid var(--sand-line);
+            background: #fff;
+            transition: all 0.15s ease;
         }
 
-        .btn-save:hover { background: #2A3444; }
+        .btn-lock { color: var(--clay); }
+        .btn-lock:hover { border-color: var(--clay); background: #FBF0ED; }
 
-        .date-cell { color: var(--ink-soft); font-size: 13.5px; white-space: nowrap; }
+        .btn-unlock { color: var(--sage); }
+        .btn-unlock:hover { border-color: var(--sage); background: #F2F5EF; }
+
+        .role-text { font-weight: 500; color: var(--ink-soft); }
 
         @media (max-width: 860px) {
             .layout { grid-template-columns: 1fr; }
@@ -281,8 +294,8 @@
             <nav class="sidebar-nav">
                 <a href="/admin/dashboard">Dashboard</a>
                 <a href="/admin/products">Quản lý sản phẩm</a>
-                <a href="/admin/orders" class="active">Quản lý đơn hàng</a>
-                <a href="/admin/users" sec:authorize="hasRole('ADMIN')">Tài Khoản Khách Hàng</a>
+                <a href="/admin/orders">Quản lý đơn hàng</a>
+                <a href="/admin/users" class="active">Tài khoản khách hàng</a>
 
                 <div class="sidebar-divider"></div>
                 <a href="/" class="exit">Về trang chủ</a>
@@ -296,8 +309,8 @@
         <!-- Main -->
         <div class="main">
             <div class="topbar">
-                <h1>Quản lý đơn hàng</h1>
-                <p>Cập nhật trạng thái thanh toán và xử lý đơn hàng.</p>
+                <h1>Tài khoản khách hàng</h1>
+                <p>Quản lý phân quyền và trạng thái hoạt động của người dùng.</p>
             </div>
 
             <div class="content">
@@ -305,44 +318,47 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Mã đơn</th>
-                                <th>Khách hàng</th>
-                                <th>Tổng tiền</th>
-                                <th>Thanh toán</th>
+                                <th>Tài khoản</th>
+                                <th>Liên hệ</th>
+                                <th>Vai trò</th>
                                 <th>Trạng thái</th>
-                                <th>Ngày tạo</th>
                                 <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="order : ${orders}">
-                                <td class="order-id">#<span th:text="${order.id}"></span></td>
-                                <td th:text="${order.user.fullName}"></td>
-                                <td class="amount" th:text="'₫' + ${#numbers.formatInteger(order.totalAmount, 0, 'COMMA')}"></td>
+                            <tr th:each="user : ${users}">
                                 <td>
-                                    <span class="payment-method-pill" th:text="${order.paymentMethod}"></span>
-                                    <form th:action="'/admin/orders/' + ${order.id} + '/payment'" method="post">
-                                        <select name="paymentStatus" onchange="this.form.submit()">
-                                            <option value="UNPAID" th:selected="${order.paymentStatus == 'UNPAID'}">Chưa thanh toán</option>
-                                            <option value="PENDING" th:selected="${order.paymentStatus == 'PENDING'}">Chờ xác nhận</option>
-                                            <option value="PAID" th:selected="${order.paymentStatus == 'PAID'}">Đã thanh toán</option>
+                                    <div class="name-cell" th:text="${user.fullName}"></div>
+                                    <div class="sub-text" th:text="${user.username}"></div>
+                                </td>
+                                <td>
+                                    <div th:text="${user.email}"></div>
+                                    <div class="sub-text" th:text="${user.phone}"></div>
+                                </td>
+                                <td>
+                                    <!-- Form cấp quyền (Chỉ Admin) -->
+                                    <form th:action="'/admin/users/' + ${user.id} + '/role'" method="post" class="role-form" sec:authorize="hasRole('ADMIN')">
+                                        <select name="role" class="select-role">
+                                            <option value="CUSTOMER" th:selected="${user.role == 'CUSTOMER'}">Khách hàng</option>
+                                            <option value="STAFF" th:selected="${user.role == 'STAFF'}">Nhân viên</option>
+                                            <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">Admin</option>
                                         </select>
+                                        <button type="submit" class="btn-mini">Lưu</button>
                                     </form>
+                                    
+                                    <!-- Hiển thị text thường nếu không phải Admin -->
+                                    <span class="role-text" sec:authorize="!hasRole('ADMIN')" th:text="${user.role}"></span>
                                 </td>
                                 <td>
-                                    <span class="status-badge"
-                                          th:classappend="${order.status == 'PENDING' ? 'status-pending' : 'status-done'}"
-                                          th:text="${order.status}"></span>
+                                    <span class="status-badge" th:classappend="${user.status ? 'on' : 'off'}"
+                                          th:text="${user.status ? 'Đang hoạt động' : 'Đã khóa'}"></span>
                                 </td>
-                                <td class="date-cell" th:text="${#calendars.format(new java.util.Date(order.createdAt), 'dd/MM/yyyy HH:mm')}"></td>
-                                <td>
-                                    <form th:action="'/admin/orders/' + ${order.id} + '/status'" method="post" class="action-cell">
-                                        <select name="status">
-                                            <option th:each="value : ${statuses}"
-                                                    th:value="${value}" th:text="${value}"
-                                                    th:selected="${value == order.status}"></option>
-                                        </select>
-                                        <button class="btn-save" type="submit">Lưu</button>
+                                <td class="action-cell">
+                                    <form th:action="'/admin/users/' + ${user.id} + '/status'" method="post">
+                                        <input type="hidden" name="status" th:value="${!user.status}">
+                                        <button type="submit" class="btn-action" 
+                                                th:classappend="${user.status ? 'btn-lock' : 'btn-unlock'}"
+                                                th:text="${user.status ? 'Khóa tài khoản' : 'Mở khóa'}"></button>
                                     </form>
                                 </td>
                             </tr>

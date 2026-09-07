@@ -1,66 +1,349 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản Lý Đơn Hàng - Quý Shop</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Quản lý đơn hàng · Quý Shop Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .sidebar a { color: white; text-decoration: none; display: block; padding: 10px 15px; margin: 5px 0; border-radius: 8px; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 0; margin-bottom: 30px; }
-        .table { background: white; border-radius: 8px; }
-        .status-badge { border-radius: 20px; padding: 5px 15px; font-weight: bold; }
+        :root {
+            --ink: #1C2430;
+            --ink-soft: #4B5361;
+            --cream: #FAF7F2;
+            --sand: #EDE6D9;
+            --sand-line: #DCD2BF;
+            --gold: #B8873D;
+            --gold-deep: #96692A;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--ink);
+            background: var(--cream);
+        }
+
+        a { color: inherit; }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 232px 1fr;
+            min-height: 100vh;
+        }
+
+        /* ---------- Sidebar (shared with dashboard) ---------- */
+        .sidebar {
+            background: var(--ink);
+            padding: 28px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-mark {
+            display: flex;
+            align-items: baseline;
+            gap: 9px;
+            text-decoration: none;
+            margin-bottom: 8px;
+            padding: 0 6px;
+        }
+
+        .brand-mark .tag {
+            width: 10px;
+            height: 10px;
+            border: 1.5px solid var(--gold);
+            border-radius: 2px;
+            transform: rotate(45deg);
+            position: relative;
+            top: -1px;
+        }
+
+        .brand-mark span {
+            font-family: 'Fraunces', serif;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--cream);
+        }
+
+        .sidebar-tag {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: var(--gold);
+            padding: 0 6px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+        }
+
+        .sidebar-nav a {
+            font-size: 14.5px;
+            color: rgba(250, 247, 242, 0.72);
+            text-decoration: none;
+            padding: 10px 12px;
+            border-radius: 6px;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .sidebar-nav a:hover { background: rgba(250, 247, 242, 0.06); color: var(--cream); }
+
+        .sidebar-nav a.active {
+            background: rgba(184, 135, 61, 0.15);
+            color: var(--cream);
+            font-weight: 600;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: rgba(250, 247, 242, 0.1);
+            margin: 16px 6px;
+        }
+
+        .sidebar-nav a.exit { color: rgba(250, 247, 242, 0.55); }
+
+        .btn-logout {
+            width: 100%;
+            margin-top: 8px;
+            padding: 10px 12px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            background: var(--cream);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover { background: #EDE6D9; }
+
+        /* ---------- Main ---------- */
+        .main { display: flex; flex-direction: column; min-width: 0; }
+
+        .topbar {
+            padding: 32px 40px;
+            border-bottom: 1px solid var(--sand-line);
+        }
+
+        .topbar h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 26px;
+            font-weight: 500;
+            margin: 0 0 6px;
+        }
+
+        .topbar p {
+            font-size: 14.5px;
+            color: var(--ink-soft);
+            margin: 0;
+        }
+
+        .content { padding: 32px 40px 60px; }
+
+        /* ---------- Table ---------- */
+        .table-card {
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 10px;
+            overflow: hidden;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 880px;
+        }
+
+        thead th {
+            text-align: left;
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            color: var(--ink-soft);
+            padding: 14px 18px;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sand-line);
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--sand-line);
+            vertical-align: middle;
+        }
+
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: #FBFAF7; }
+
+        .order-id { font-weight: 600; color: var(--ink); }
+
+        .amount { font-family: 'Fraunces', serif; font-weight: 600; white-space: nowrap; }
+
+        .payment-method-pill {
+            display: inline-block;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            background: var(--sand);
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        select {
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 6px;
+            padding: 7px 10px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184, 135, 61, 0.18);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .status-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-badge.status-pending { background: #FBF3E6; color: var(--gold-deep); }
+        .status-badge.status-pending::before { background: var(--gold); }
+
+        .status-badge.status-done { background: #F2F5EF; color: #3F4E3D; }
+        .status-badge.status-done::before { background: #5C6E5A; }
+
+        .action-cell { display: flex; gap: 8px; }
+
+        .btn-save {
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cream);
+            background: var(--ink);
+            border: none;
+            border-radius: 6px;
+            padding: 7px 14px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .btn-save:hover { background: #2A3444; }
+
+        .date-cell { color: var(--ink-soft); font-size: 13.5px; white-space: nowrap; }
+
+        @media (max-width: 860px) {
+            .layout { grid-template-columns: 1fr; }
+            .topbar, .content { padding-left: 24px; padding-right: 24px; }
+        }
     </style>
 </head>
 <body>
-    <div class="row no-gutters">
-        <div class="col-md-2 sidebar">
-            <h4 class="text-white mb-4">📊 Admin</h4>
-            <a href="/admin/dashboard">Dashboard</a>
-            <a href="/admin/products">Quản Lý Sản Phẩm</a>
-            <a href="/admin/orders">Quản Lý Đơn Hàng</a>
-            <a href="/">Về Trang Chủ</a>
-            <hr class="bg-white">
-            <form action="/logout" method="post">
-                <button class="btn btn-light w-100" type="submit">Đăng Xuất</button>
-            </form>
-        </div>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <a class="brand-mark" href="/">
+                <span class="tag"></span>
+                <span>Quý Shop</span>
+            </a>
+            <p class="sidebar-tag">QUẢN TRỊ</p>
 
-        <div class="col-md-10">
-            <div class="header">
-                <div class="container">
-                    <h1>📋 Quản Lý Đơn Hàng</h1>
-                </div>
+            <nav class="sidebar-nav">
+                <a href="/admin/dashboard">Dashboard</a>
+                <a href="/admin/products">Quản lý sản phẩm</a>
+                <a href="/admin/orders" class="active">Quản lý đơn hàng</a>
+                <a href="/admin/users" sec:authorize="hasRole('ADMIN')">Tài Khoản Khách Hàng</a>
+
+                <div class="sidebar-divider"></div>
+                <a href="/" class="exit">Về trang chủ</a>
+            </nav>
+
+            <form action="/logout" method="post">
+                <button class="btn-logout" type="submit">Đăng xuất</button>
+            </form>
+        </aside>
+
+        <!-- Main -->
+        <div class="main">
+            <div class="topbar">
+                <h1>Quản lý đơn hàng</h1>
+                <p>Cập nhật trạng thái thanh toán và xử lý đơn hàng.</p>
             </div>
 
-            <div class="container mt-4 mb-4">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
+            <div class="content">
+                <div class="table-card">
+                    <table>
+                        <thead>
                             <tr>
-                                <th>Mã Đơn</th>
-                                <th>Khách Hàng</th>
-                                <th>Tổng Tiền</th>
-                                <th>Trạng Thái</th>
-                                <th>Ngày Tạo</th>
-                                <th>Hành Động</th>
+                                <th>Mã đơn</th>
+                                <th>Khách hàng</th>
+                                <th>Tổng tiền</th>
+                                <th>Thanh toán</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tạo</th>
+                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="order : ${orders}">
-                                <td>#<span th:text="${order.id}"></span></td>
+                                <td class="order-id">#<span th:text="${order.id}"></span></td>
                                 <td th:text="${order.user.fullName}"></td>
-                                <td th:text="'₫' + ${#numbers.formatInteger(order.totalAmount, 0, 'COMMA')}"></td>
+                                <td class="amount" th:text="'₫' + ${#numbers.formatInteger(order.totalAmount, 0, 'COMMA')}"></td>
                                 <td>
-                                    <span class="status-badge" 
-                                          th:classappend="${order.status == 'PENDING' ? 'bg-warning' : 'bg-success'}"
+                                    <span class="payment-method-pill" th:text="${order.paymentMethod}"></span>
+                                    <form th:action="'/admin/orders/' + ${order.id} + '/payment'" method="post">
+                                        <select name="paymentStatus" onchange="this.form.submit()">
+                                            <option value="UNPAID" th:selected="${order.paymentStatus == 'UNPAID'}">Chưa thanh toán</option>
+                                            <option value="PENDING" th:selected="${order.paymentStatus == 'PENDING'}">Chờ xác nhận</option>
+                                            <option value="PAID" th:selected="${order.paymentStatus == 'PAID'}">Đã thanh toán</option>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <span class="status-badge"
+                                          th:classappend="${order.status == 'PENDING' ? 'status-pending' : 'status-done'}"
                                           th:text="${order.status}"></span>
                                 </td>
-                                <td th:text="${#calendars.format(new java.util.Date(order.createdAt), 'dd/MM/yyyy HH:mm')}"></td>
+                                <td class="date-cell" th:text="${#calendars.format(new java.util.Date(order.createdAt), 'dd/MM/yyyy HH:mm')}"></td>
                                 <td>
-                                    <a th:href="'/orders/' + ${order.id}" class="btn btn-info btn-sm">👁️ Xem</a>
+                                    <form th:action="'/admin/orders/' + ${order.id} + '/status'" method="post" class="action-cell">
+                                        <select name="status">
+                                            <option th:each="value : ${statuses}"
+                                                    th:value="${value}" th:text="${value}"
+                                                    th:selected="${value == order.status}"></option>
+                                        </select>
+                                        <button class="btn-save" type="submit">Lưu</button>
+                                    </form>
                                 </td>
                             </tr>
                         </tbody>
@@ -69,7 +352,5 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

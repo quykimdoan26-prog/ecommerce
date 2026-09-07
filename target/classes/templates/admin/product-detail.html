@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý sản phẩm · Quý Shop Admin</title>
+    <title th:text="${product != null} ? ${product.name} + ' · Quý Shop Admin' : 'Chi tiết sản phẩm · Quý Shop Admin'">Chi tiết sản phẩm · Quý Shop Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -154,150 +154,130 @@
             margin: 0;
         }
 
-        .btn-add {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        .nav-back {
             font-size: 14px;
             font-weight: 600;
-            color: var(--cream);
-            background: var(--ink);
-            padding: 11px 20px;
-            border-radius: 6px;
+            color: var(--ink-soft);
             text-decoration: none;
+            border: 1px solid var(--sand-line);
+            border-radius: 6px;
+            padding: 9px 16px;
             white-space: nowrap;
-            transition: background 0.15s ease;
         }
 
-        .btn-add:hover { background: #2A3444; }
+        .nav-back:hover { border-color: var(--gold); color: var(--gold-deep); }
 
-        .content { padding: 28px 40px 60px; }
+        .content { padding: 40px; }
 
-        /* ---------- Table ---------- */
-        .table-card {
+        /* ---------- Product card ---------- */
+        .product-card {
             background: #fff;
             border: 1px solid var(--sand-line);
             border-radius: 10px;
-            overflow: hidden;
-            overflow-x: auto;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 44px;
+            max-width: 920px;
         }
 
-        table {
+        .product-image {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-            min-width: 960px;
-        }
-
-        thead th {
-            text-align: left;
-            font-size: 11.5px;
-            font-weight: 600;
-            letter-spacing: 0.03em;
-            color: var(--ink-soft);
-            padding: 14px 18px;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 8px;
             background: var(--sand);
-            border-bottom: 1px solid var(--sand-line);
-            white-space: nowrap;
+            border: 1px solid var(--sand-line);
         }
 
-        tbody td {
-            padding: 16px 18px;
-            border-bottom: 1px solid var(--sand-line);
-            vertical-align: top;
+        .category-pill {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gold-deep);
+            background: #FBF3E6;
+            padding: 5px 13px;
+            border-radius: 20px;
+            margin-bottom: 16px;
         }
 
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover { background: #FBFAF7; }
+        .product-title {
+            font-family: 'Fraunces', serif;
+            font-size: 27px;
+            font-weight: 500;
+            margin: 0 0 12px;
+            line-height: 1.25;
+        }
 
-        .id-cell { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-        .name-cell { font-weight: 600; }
-
-        .desc-cell {
-            max-width: 260px;
+        .product-desc {
+            font-size: 15px;
+            line-height: 1.7;
             color: var(--ink-soft);
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            margin: 0 0 26px;
+        }
+
+        .product-price {
+            font-family: 'Fraunces', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--gold-deep);
+            margin: 0 0 24px;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding-top: 22px;
+            border-top: 1px solid var(--sand-line);
+        }
+
+        .meta-item .label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink-soft);
             margin-bottom: 6px;
         }
 
-        .desc-link {
-            font-size: 12.5px;
+        .meta-item .value {
+            font-size: 15px;
             font-weight: 600;
-            color: var(--gold-deep);
-            text-decoration: none;
+            color: var(--ink);
         }
 
-        .desc-link:hover { text-decoration: underline; }
-
-        .amount { font-family: 'Fraunces', serif; font-weight: 600; white-space: nowrap; }
-
-        .status-badge {
+        .stock-tag {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 5px 12px;
-            border-radius: 20px;
-            white-space: nowrap;
         }
 
-        .status-badge::before {
+        .stock-tag::before {
             content: "";
             width: 6px;
             height: 6px;
             border-radius: 50%;
+            background: var(--sage);
         }
 
-        .status-badge.on { background: #F2F5EF; color: #3F4E3D; }
-        .status-badge.on::before { background: var(--sage); }
-
-        .status-badge.off { background: #FBF0ED; color: #7A2E1D; }
-        .status-badge.off::before { background: var(--clay); }
-
-        .action-cell {
-            display: flex;
-            gap: 8px;
-            white-space: nowrap;
+        .not-found {
+            text-align: center;
+            padding: 80px 24px;
+            color: var(--ink-soft);
         }
 
-        .action-cell form { margin: 0; }
-
-        .btn-edit,
-        .btn-delete {
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 6px;
-            padding: 7px 13px;
-            cursor: pointer;
-            text-decoration: none;
-            border: 1px solid var(--sand-line);
-            transition: border-color 0.15s ease, color 0.15s ease;
-            display: inline-block;
-        }
-
-        .btn-edit {
+        .not-found h3 {
+            font-family: 'Fraunces', serif;
+            font-weight: 500;
+            font-size: 20px;
             color: var(--ink);
-            background: #fff;
+            margin: 0 0 8px;
         }
-
-        .btn-edit:hover { border-color: var(--gold); color: var(--gold-deep); }
-
-        .btn-delete {
-            color: var(--clay);
-            background: #fff;
-        }
-
-        .btn-delete:hover { border-color: var(--clay); background: #FBF0ED; }
 
         @media (max-width: 860px) {
             .layout { grid-template-columns: 1fr; }
             .topbar, .content { padding-left: 24px; padding-right: 24px; }
-            .topbar { flex-direction: column; align-items: flex-start; }
+            .product-card { grid-template-columns: 1fr; padding: 28px; }
         }
     </style>
 </head>
@@ -315,7 +295,7 @@
                 <a href="/admin/dashboard">Dashboard</a>
                 <a href="/admin/products" class="active">Quản lý sản phẩm</a>
                 <a href="/admin/orders">Quản lý đơn hàng</a>
-                <a href="/admin/users" sec:authorize="hasRole('ADMIN')">Tài Khoản Khách Hàng</a>
+                <a href="/admin/users">Tài khoản khách hàng</a>
 
                 <div class="sidebar-divider"></div>
                 <a href="/" class="exit">Về trang chủ</a>
@@ -330,51 +310,37 @@
         <div class="main">
             <div class="topbar">
                 <div>
-                    <h1>Quản lý sản phẩm</h1>
-                    <p>Thêm, chỉnh sửa và theo dõi toàn bộ sản phẩm.</p>
+                    <h1>Chi tiết sản phẩm</h1>
+                    <p>Xem thông tin đầy đủ của sản phẩm.</p>
                 </div>
-                <a href="/admin/products/add" class="btn-add" sec:authorize="hasRole('ADMIN')">Thêm sản phẩm mới</a>
+                <a href="/admin/products" class="nav-back">&larr; Danh sách sản phẩm</a>
             </div>
 
             <div class="content">
-                <div class="table-card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Tên sản phẩm</th>
-                                <th>Mô tả</th>
-                                <th>Giá</th>
-                                <th>Số lượng</th>
-                                <th>Danh mục</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="product : ${products}">
-                                <td class="id-cell" th:text="${product.id}"></td>
-                                <td class="name-cell" th:text="${product.name}"></td>
-                                <td>
-                                    <div class="desc-cell" th:text="${product.description}"></div>
-                                    <a th:href="'/admin/products/view/' + ${product.id}" class="desc-link">Xem chi tiết</a>
-                                </td>
-                                <td class="amount" th:text="'₫' + ${#numbers.formatInteger(product.price, 0, 'COMMA')}"></td>
-                                <td th:text="${product.quantity}"></td>
-                                <td th:text="${product.category.name}"></td>
-                                <td>
-                                    <span class="status-badge" th:classappend="${product.status ? 'on' : 'off'}"
-                                          th:text="${product.status ? 'Hoạt động' : 'Tắt'}"></span>
-                                </td>
-                                <td class="action-cell" sec:authorize="hasRole('ADMIN')">
-                                    <a th:href="'/admin/products/edit/' + ${product.id}" class="btn-edit">Sửa</a>
-                                    <form th:action="'/admin/products/delete/' + ${product.id}" method="post">
-                                        <button class="btn-delete" type="submit" onclick="return confirm('Xác nhận xóa?')">Xóa</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="product-card" th:if="${product != null}">
+                    <img th:src="${product.imageUrl}" class="product-image" alt="Ảnh sản phẩm">
+                    <div>
+                        <span class="category-pill" th:text="${product.category.name}"></span>
+                        <h1 class="product-title" th:text="${product.name}"></h1>
+                        <p class="product-desc" th:text="${product.description}"></p>
+                        <p class="product-price" th:text="'₫' + ${#numbers.formatInteger(product.price, 0, 'COMMA')}"></p>
+
+                        <div class="meta-grid">
+                            <div class="meta-item">
+                                <span class="label">Tồn kho</span>
+                                <span class="value stock-tag" th:text="${product.quantity} + ' sản phẩm'"></span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="label">Danh mục</span>
+                                <span class="value" th:text="${product.category.name}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="not-found" th:if="${product == null}">
+                    <h3>Không tìm thấy sản phẩm</h3>
+                    <p>Sản phẩm này có thể đã bị xoá hoặc không tồn tại.</p>
                 </div>
             </div>
         </div>

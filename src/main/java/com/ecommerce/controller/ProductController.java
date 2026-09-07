@@ -1,6 +1,5 @@
 package com.ecommerce.controller;
 
-import com.ecommerce.entity.Product;
 import com.ecommerce.entity.User;
 import com.ecommerce.service.ProductService;
 import com.ecommerce.service.CategoryService;

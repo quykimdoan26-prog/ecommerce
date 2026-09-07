@@ -1,9 +1,10 @@
 package com.ecommerce.controller;
 
-import com.ecommerce.entity.Order;
 import com.ecommerce.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import com.ecommerce.entity.User;
+import com.ecommerce.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,24 +15,27 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping
     public String myOrders(Authentication auth, Model model) {
-        // TODO: get current user and fetch their orders
+        User user = userService.findByUsername(auth.getName()).orElse(null);
+        model.addAttribute("orders", user == null ? java.util.List.of()
+                : orderService.getUserOrders(user.getId()));
         return "customer/orders";
     }
 
     @GetMapping("/{id}")
-    public String viewOrder(@PathVariable Long id, Model model) {
-        orderService.getOrderById(id).ifPresent(order -> {
-            model.addAttribute("order", order);
+    public String viewOrder(@PathVariable Long id, Authentication auth, Model model) {
+        User user = userService.findByUsername(auth.getName()).orElse(null);
+        var order = orderService.getOrderById(id).filter(item -> user != null
+                && item.getUser().getId().equals(user.getId()));
+        order.ifPresent(item -> {
+            model.addAttribute("order", item);
             model.addAttribute("items", orderService.getOrderItems(id));
         });
-        return "customer/order-detail";
+        return order.isPresent() ? "customer/order-detail" : "redirect:/orders";
     }
 
-    @PostMapping("/create")
-    public String createOrder(@ModelAttribute Order order) {
-        Order saved = orderService.createOrder(order);
-        return "redirect:/orders/" + saved.getId();
-    }
 }

@@ -1,88 +1,351 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết Sản Phẩm - Quý Shop</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title th:text="${product.name} + ' · Quý Shop'">Chi tiết sản phẩm · Quý Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .product-detail { background: white; padding: 40px; border-radius: 12px; }
-        .product-image { max-width: 400px; height: auto; border-radius: 12px; }
-        .product-title { font-size: 2rem; font-weight: bold; color: #2c3e50; }
-        .product-price { font-size: 1.8rem; color: #27ae60; font-weight: bold; }
-        .btn-add-cart { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; }
+        :root {
+            --ink: #1C2430;
+            --ink-soft: #4B5361;
+            --cream: #FAF7F2;
+            --sand: #EDE6D9;
+            --sand-line: #DCD2BF;
+            --gold: #B8873D;
+            --gold-deep: #96692A;
+            --clay: #B0402C;
+            --sage: #5C6E5A;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--ink);
+            background: var(--cream);
+        }
+
+        a { color: inherit; }
+
+        /* ---------- Navbar ---------- */
+        .nav { background: var(--ink); }
+
+        .nav-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .brand-mark {
+            display: flex;
+            align-items: baseline;
+            gap: 9px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .brand-mark .tag {
+            width: 10px;
+            height: 10px;
+            border: 1.5px solid var(--gold);
+            border-radius: 2px;
+            transform: rotate(45deg);
+            position: relative;
+            top: -1px;
+        }
+
+        .brand-mark span {
+            font-family: 'Fraunces', serif;
+            font-size: 19px;
+            font-weight: 500;
+            color: var(--cream);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 26px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            flex: 1;
+        }
+
+        .nav-links a {
+            font-size: 14.5px;
+            color: rgba(250, 247, 242, 0.72);
+            text-decoration: none;
+        }
+
+        .nav-links a:hover { color: var(--cream); }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-shrink: 0;
+        }
+
+        .nav-actions a {
+            font-size: 14px;
+            color: rgba(250, 247, 242, 0.75);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-actions a:hover { color: var(--cream); }
+
+        .nav-actions .cart-link {
+            color: var(--cream);
+            font-weight: 600;
+            border: 1px solid rgba(250, 247, 242, 0.25);
+            border-radius: 6px;
+            padding: 7px 14px;
+        }
+
+        .nav-actions .cart-link:hover { border-color: var(--gold); }
+
+        /* ---------- Content ---------- */
+        .wrap {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 48px 24px 96px;
+        }
+
+        .notice {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 12px 14px;
+            border-radius: 6px;
+            margin-bottom: 32px;
+            border: 1px solid transparent;
+        }
+
+        .notice::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .notice.success { background: #F2F5EF; border-color: #D7E0D1; color: #3F4E3D; }
+        .notice.success::before { background: var(--sage); }
+        .notice.success a { color: var(--sage); font-weight: 600; text-decoration: underline; }
+
+        .notice.info { background: #F1F0EC; border-color: #DFDCD1; color: var(--ink-soft); }
+        .notice.info::before { background: var(--gold); }
+        .notice.info a { color: var(--gold-deep); font-weight: 600; text-decoration: underline; }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 56px;
+            align-items: start;
+        }
+
+        .detail-image {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            background: var(--sand);
+            border-radius: 10px;
+            border: 1px solid var(--sand-line);
+        }
+
+        .stock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 18px;
+        }
+
+        .stock-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .stock-badge.in-stock { background: #F2F5EF; color: #3F4E3D; }
+        .stock-badge.in-stock::before { background: var(--sage); }
+
+        .stock-badge.out-stock { background: #FBF0ED; color: #7A2E1D; }
+        .stock-badge.out-stock::before { background: var(--clay); }
+
+        .detail-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(26px, 3vw, 34px);
+            font-weight: 500;
+            margin: 0 0 14px;
+            line-height: 1.25;
+        }
+
+        .detail-desc {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--ink-soft);
+            margin: 0 0 28px;
+        }
+
+        .detail-price {
+            font-family: 'Fraunces', serif;
+            font-size: 30px;
+            font-weight: 600;
+            color: var(--gold-deep);
+            margin: 0 0 28px;
+        }
+
+        .purchase-box {
+            padding-top: 26px;
+            border-top: 1px solid var(--sand-line);
+        }
+
+        .qty-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .qty-row input {
+            width: 90px;
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 6px;
+        }
+
+        .qty-row input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184, 135, 61, 0.18);
+        }
+
+        .btn-add-cart {
+            flex: 1;
+            padding: 13px 20px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--cream);
+            background: var(--ink);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .btn-add-cart:hover:not(:disabled) { background: #2A3444; }
+        .btn-add-cart:disabled { background: var(--sand-line); color: #A39C8C; cursor: not-allowed; }
+
+        .btn-login-full {
+            display: block;
+            text-align: center;
+            width: 100%;
+            padding: 13px;
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--cream);
+            background: var(--ink);
+            border-radius: 6px;
+            text-decoration: none;
+            margin-top: 14px;
+        }
+
+        .btn-login-full:hover { background: #2A3444; }
+
+        .stock-line {
+            font-size: 13.5px;
+            color: var(--ink-soft);
+            margin-top: 16px;
+        }
+
+        .stock-line strong { color: var(--ink); font-weight: 600; }
+
+        @media (max-width: 780px) {
+            .detail-grid { grid-template-columns: 1fr; gap: 32px; }
+            .nav-links { display: none; }
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Quý Shop</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/products">Sản Phẩm</a></li>
-                    <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" href="/orders">Đơn Hàng</a></li>
-                </ul>
-            </div>
-            <div class="ms-auto">
-                <a href="/cart" class="btn btn-light btn-sm me-2" sec:authorize="isAuthenticated()">🛒 Giỏ Hàng</a>
-                <a href="/products" class="btn btn-light btn-sm">← Quay Lại</a>
+    <!-- Navbar -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a class="brand-mark" href="/">
+                <span class="tag"></span>
+                <span>Quý Shop</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/products">Sản phẩm</a></li>
+                <li sec:authorize="isAuthenticated()"><a href="/orders">Đơn hàng</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a class="cart-link" href="/cart" sec:authorize="isAuthenticated()">Giỏ hàng</a>
+                <a href="/products">&larr; Quay lại</a>
             </div>
         </div>
     </nav>
 
-    <div class="container my-5">
-        <div th:if="${param.added}" class="alert alert-success">
-            ✅ Sản phẩm đã thêm vào giỏ hàng! <a href="/cart">Xem giỏ hàng</a>
+    <div class="wrap">
+        <div th:if="${param.added}" class="notice success">
+            Đã thêm sản phẩm vào giỏ hàng. <a href="/cart">Xem giỏ hàng</a>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <img th:src="${product.imageUrl}" class="product-image" alt="${product.name}">
-            </div>
-            <div class="col-md-6">
-                <div class="product-detail">
-                    <h1 class="product-title" th:text="${product.name}"></h1>
-                    <p class="text-muted" th:text="${product.description}"></p>
-                    
-                    <div class="my-4">
-                        <span class="badge" th:classappend="${product.quantity > 0 ? 'bg-success' : 'bg-danger'}" 
-                              th:text="${product.quantity > 0 ? 'Còn Hàng' : 'Hết Hàng'}"></span>
-                    </div>
+        <div class="detail-grid">
+            <img th:src="${product.imageUrl}" class="detail-image" th:alt="${product.name}">
 
-                    <div class="my-4">
-                        <h3 class="product-price" th:text="'₫' + ${#numbers.formatInteger(product.price, 0, 'COMMA')}"></h3>
-                    </div>
+            <div>
+                <span class="stock-badge in-stock" th:if="${product.quantity > 0}">Còn hàng</span>
+                <span class="stock-badge out-stock" th:if="${product.quantity == 0}">Hết hàng</span>
 
-                    <div class="my-4" sec:authorize="!isAuthenticated()">
-                        <div class="alert alert-info">
-                            🔐 Bạn cần <a href="/auth/login">đăng nhập</a> để mua hàng
+                <h1 class="detail-title" th:text="${product.name}"></h1>
+                <p class="detail-desc" th:text="${product.description}"></p>
+                <p class="detail-price" th:text="'₫' + ${#numbers.formatInteger(product.price, 0, 'COMMA')}"></p>
+
+                <div class="purchase-box">
+                    <div sec:authorize="!isAuthenticated()">
+                        <div class="notice info">
+                            Bạn cần <a href="/auth/login">đăng nhập</a> để mua hàng.
                         </div>
-                        <a href="/auth/login" class="btn btn-primary btn-lg w-100">Đăng Nhập</a>
+                        <a href="/auth/login" class="btn-login-full">Đăng nhập</a>
                     </div>
 
-                    <div class="my-4" sec:authorize="isAuthenticated()">
+                    <div sec:authorize="isAuthenticated()">
                         <form method="post" th:action="@{/products/add-to-cart}">
                             <input type="hidden" name="productId" th:value="${product.id}">
-                            <div class="input-group mb-3" style="width: 200px;">
-                                <input type="number" class="form-control" name="quantity" value="1" min="1" th:max="${product.quantity}">
-                                <button class="btn btn-primary btn-add-cart" type="submit" th:disabled="${product.quantity == 0}">
-                                    🛒 Thêm Vào Giỏ
-                                </button>
+                            <div class="qty-row">
+                                <input type="number" name="quantity" value="1" min="1" th:max="${product.quantity}">
+                                <button class="btn-add-cart" type="submit" th:disabled="${product.quantity == 0}">Thêm vào giỏ</button>
                             </div>
                         </form>
                     </div>
 
-                    <div class="my-4 alert alert-info">
-                        <strong>📦 Số Lượng Kho:</strong> <span th:text="${product.quantity}"></span>
-                    </div>
+                    <p class="stock-line"><strong>Số lượng kho:</strong> <span th:text="${product.quantity}"></span></p>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

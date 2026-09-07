@@ -20,8 +20,13 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/products/**", "/auth/**", "/static/**", "/about", "/contact").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/products/add", "/admin/products/edit/**",
+                                 "/admin/products/save", "/admin/products/delete/**")
+                    .hasRole("ADMIN")
+                .requestMatchers("/admin/users/**").hasRole("ADMIN")
+                .requestMatchers("/admin/**").hasAnyRole("ADMIN", "STAFF")
                 .requestMatchers("/cart/**", "/orders/**").hasAnyRole("CUSTOMER", "ADMIN")
+                .requestMatchers("/checkout/**").hasAnyRole("CUSTOMER", "ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

@@ -52,6 +52,8 @@ CREATE TABLE IF NOT EXISTS orders (
     user_id BIGINT NOT NULL,
     total_amount DOUBLE DEFAULT 0,
     status VARCHAR(50) NOT NULL DEFAULT 'PENDING',
+    payment_method VARCHAR(50) NOT NULL DEFAULT 'COD',
+    payment_status VARCHAR(50) NOT NULL DEFAULT 'UNPAID',
     shipping_address TEXT,
     notes TEXT,
     created_at BIGINT,
@@ -118,9 +120,12 @@ INSERT INTO users (username, password, email, full_name, phone, address, role, s
 ('customer2', '$2a$10$slYQmyNdGzin7olVN3p5Be7DlH.PKZbv5H8KnzzVgXXbVxzy990dm', 'customer2@email.com', 'Trần Thị B', '0923456789', '789 Đường Khách, Đà Nẵng', 'CUSTOMER', 1, UNIX_TIMESTAMP() * 1000, UNIX_TIMESTAMP() * 1000);
 
 -- Insert Sample Orders
-INSERT INTO orders (user_id, total_amount, status, shipping_address, notes, created_at, updated_at) VALUES
-(2, 30500000, 'PENDING', '456 Đường Customer, HCM', 'Giao hàng vào chiều', UNIX_TIMESTAMP() * 1000, UNIX_TIMESTAMP() * 1000),
-(3, 5500000, 'CONFIRMED', '789 Đường Khách, Đà Nẵng', 'Giao nhanh', UNIX_TIMESTAMP() * 1000, UNIX_TIMESTAMP() * 1000);
+INSERT INTO users (username, password, email, full_name, phone, address, role, status, created_at, updated_at) VALUES
+('staff', '$2a$10$slYQmyNdGzin7olVN3p5Be7DlH.PKZbv5H8KnzzbVgXXbVxzy990dm', 'staff@shopnow.com', 'Nhân viên cửa hàng', '0900000000', 'Quý Shop', 'STAFF', 1, UNIX_TIMESTAMP() * 1000, UNIX_TIMESTAMP() * 1000);
+
+INSERT INTO orders (user_id, total_amount, status, payment_method, payment_status, shipping_address, notes, created_at, updated_at) VALUES
+(2, 30500000, 'PENDING', 'COD', 'UNPAID', '456 Đường Customer, HCM', 'Giao hàng vào chiều', UNIX_TIMESTAMP() * 1000, UNIX_TIMESTAMP() * 1000),
+(3, 5500000, 'CONFIRMED', 'COD', 'UNPAID', '789 Đường Khách, Đà Nẵng', 'Giao nhanh', UNIX_TIMESTAMP() * 1000, UNIX_TIMESTAMP() * 1000);
 
 -- Insert Order Items
 INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price, created_at) VALUES

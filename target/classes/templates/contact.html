@@ -1,103 +1,358 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liên Hệ - Quý shop</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Liên hệ · Quý Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .navbar { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 80px 20px; text-align: center; }
-        .form-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .form-control, .form-select { border-radius: 8px; }
-        .form-control:focus, .form-select:focus { border-color: #667eea; box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25); }
-        .info-box { background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; }
-        .info-box h5 { color: #667eea; margin-bottom: 15px; }
+        :root {
+            --ink: #1C2430;
+            --ink-soft: #4B5361;
+            --cream: #FAF7F2;
+            --sand: #EDE6D9;
+            --sand-line: #DCD2BF;
+            --gold: #B8873D;
+            --gold-deep: #96692A;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--ink);
+            background: var(--cream);
+        }
+
+        a { color: inherit; }
+
+        /* ---------- Navbar ---------- */
+        .nav { background: var(--ink); }
+
+        .nav-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-mark {
+            display: flex;
+            align-items: baseline;
+            gap: 9px;
+            text-decoration: none;
+        }
+
+        .brand-mark .tag {
+            width: 10px;
+            height: 10px;
+            border: 1.5px solid var(--gold);
+            border-radius: 2px;
+            transform: rotate(45deg);
+            position: relative;
+            top: -1px;
+        }
+
+        .brand-mark span {
+            font-family: 'Fraunces', serif;
+            font-size: 19px;
+            font-weight: 500;
+            color: var(--cream);
+        }
+
+        .nav-back {
+            font-size: 14px;
+            color: rgba(250, 247, 242, 0.75);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-back:hover { color: var(--cream); }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            position: relative;
+            padding: 64px 24px 56px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                repeating-linear-gradient(
+                    115deg,
+                    rgba(184, 135, 61, 0.10) 0px,
+                    rgba(184, 135, 61, 0.10) 1px,
+                    transparent 1px,
+                    transparent 88px
+                );
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            position: relative;
+            font-size: 13.5px;
+            color: var(--gold-deep);
+            font-weight: 600;
+            margin: 0 0 16px;
+        }
+
+        .hero h1 {
+            position: relative;
+            font-family: 'Fraunces', serif;
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 500;
+            margin: 0 0 14px;
+        }
+
+        .hero p {
+            position: relative;
+            font-size: 15.5px;
+            color: var(--ink-soft);
+            max-width: 420px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* ---------- Content ---------- */
+        .content {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 64px 24px 96px;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 48px;
+        }
+
+        .panel-title {
+            font-family: 'Fraunces', serif;
+            font-size: 22px;
+            font-weight: 500;
+            margin: 0 0 26px;
+        }
+
+        /* Form card */
+        .form-card {
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 10px;
+            padding: 36px;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .field { margin-bottom: 18px; }
+
+        .field label {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--ink-soft);
+            margin-bottom: 7px;
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid var(--sand-line);
+            border-radius: 6px;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            resize: vertical;
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder { color: #B3AC9E; }
+
+        .field input:focus,
+        .field textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184, 135, 61, 0.18);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            margin-top: 6px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--cream);
+            background: var(--ink);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .btn-submit:hover { background: #2A3444; }
+        .btn-submit:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+        /* Info list */
+        .info-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-item {
+            padding: 22px 0;
+            border-bottom: 1px solid var(--sand-line);
+        }
+
+        .info-item:first-of-type { padding-top: 0; }
+
+        .info-item h5 {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            color: var(--gold-deep);
+            margin: 0 0 8px;
+        }
+
+        .info-item p {
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 0;
+            color: var(--ink);
+        }
+
+        .info-item p strong {
+            font-weight: 600;
+            color: var(--ink-soft);
+            font-size: 13.5px;
+        }
+
+        .social-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .social-row a {
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--ink);
+            border: 1px solid var(--sand-line);
+            border-radius: 6px;
+            padding: 8px 14px;
+            transition: border-color 0.15s ease, color 0.15s ease;
+        }
+
+        .social-row a:hover { border-color: var(--gold); color: var(--gold-deep); }
+
+        @media (max-width: 860px) {
+            .content { grid-template-columns: 1fr; gap: 40px; }
+            .field-row { grid-template-columns: 1fr; gap: 0; }
+            .form-card { padding: 28px; }
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Quy Shop</a>
-            <div class="ms-auto">
-                <a href="/" class="btn btn-light btn-sm">← Trang Chủ</a>
-            </div>
+    <!-- Navbar -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a class="brand-mark" href="/">
+                <span class="tag"></span>
+                <span>Quý Shop</span>
+            </a>
+            <a href="/" class="nav-back">&larr; Trang chủ</a>
         </div>
     </nav>
 
-    <div class="hero">
-        <h1>Liên Hệ Với Chúng Tôi</h1>
-        <p class="lead">Chúng tôi luôn sẵn sàng thi đua để giúp đỡ</p>
-    </div>
+    <!-- Hero -->
+    <section class="hero">
+        <p class="hero-eyebrow">Chúng tôi luôn lắng nghe</p>
+        <h1>Liên hệ với chúng tôi</h1>
+        <p>Có câu hỏi về đơn hàng, sản phẩm hay hợp tác kinh doanh? Gửi tin nhắn cho chúng tôi, đội ngũ sẽ phản hồi sớm nhất có thể.</p>
+    </section>
 
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-card">
-                    <h3 class="mb-4">📧 Gửi Tin Nhắn</h3>
-                    <form>
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Họ và Tên</label>
-                            <input type="text" class="form-control" id="name" placeholder="Nhập tên của bạn" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" placeholder="Nhập email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="subject" class="form-label">Tiêu Đề</label>
-                            <input type="text" class="form-control" id="subject" placeholder="Nhập tiêu đề" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Nội Dung</label>
-                            <textarea class="form-control" id="message" rows="5" placeholder="Nhập nội dung tin nhắn" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
-                            📨 Gửi Tin Nhắn
-                        </button>
-                    </form>
+    <!-- Content -->
+    <div class="content">
+        <!-- Contact form -->
+        <div class="form-card">
+            <h3 class="panel-title">Gửi tin nhắn</h3>
+            <form>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="name">Họ và tên</label>
+                        <input type="text" id="name" placeholder="Nguyễn Văn A" required>
+                    </div>
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="ban@vidu.com" required>
+                    </div>
                 </div>
-            </div>
+                <div class="field">
+                    <label for="subject">Tiêu đề</label>
+                    <input type="text" id="subject" placeholder="Bạn cần hỗ trợ điều gì?" required>
+                </div>
+                <div class="field">
+                    <label for="message">Nội dung</label>
+                    <textarea id="message" rows="5" placeholder="Nhập nội dung tin nhắn" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Gửi tin nhắn</button>
+            </form>
+        </div>
 
-            <div class="col-md-6">
-                <h3 class="mb-4">📞 Thông Tin Liên Hệ</h3>
-
-                <div class="info-box">
-                    <h5>📍 Địa Chỉ</h5>
-                    <p>Đại Học Kiến Trúc Đà Nẵng<br>Hòa Cường, Đà Nẵng<br>Việt Nam</p>
+        <!-- Contact info -->
+        <div>
+            <h3 class="panel-title">Thông tin liên hệ</h3>
+            <div class="info-list">
+                <div class="info-item">
+                    <h5>Địa chỉ</h5>
+                    <p>Đại học Kiến trúc Đà Nẵng<br>Hòa Cường, Đà Nẵng, Việt Nam</p>
                 </div>
 
-                <div class="info-box">
-                    <h5>☎️ Điện Thoại</h5>
-                    <p><strong>Hotline:</strong> 0854984836<br>
+                <div class="info-item">
+                    <h5>Điện thoại</h5>
+                    <p><strong>Hotline:</strong> 0854 984 836<br>
                     <strong>Fax:</strong> 888-8888-8888</p>
                 </div>
 
-                <div class="info-box">
-                    <h5>✉️ Email</h5>
-                    <p><strong>Hỗ Trợ:</strong> Quykimdoan26@gmail.com<br>
-                    <strong>Kinh Doanh:</strong> business@shopnow.com</p>
+                <div class="info-item">
+                    <h5>Email</h5>
+                    <p><strong>Hỗ trợ:</strong> Quykimdoan26@gmail.com<br>
+                    <strong>Kinh doanh:</strong> business@shopnow.com</p>
                 </div>
 
-                <div class="info-box">
-                    <h5>🕐 Giờ Hoạt Động</h5>
-                    <p><strong>Thứ Hai - Thứ Sáu:</strong> 8:00 - 18:00<br>
-                    <strong>Thứ Bảy - Chủ Nhật:</strong> 9:00 - 17:00</p>
+                <div class="info-item">
+                    <h5>Giờ hoạt động</h5>
+                    <p><strong>Thứ Hai – Thứ Sáu:</strong> 8:00 – 18:00<br>
+                    <strong>Thứ Bảy – Chủ Nhật:</strong> 9:00 – 17:00</p>
                 </div>
 
-                <div class="info-box">
-                    <h5>🌐 Mạng Xã Hội</h5>
-                    <p>
-                        <a href="https://www.facebook.com/kim.quy.337019/" class="btn btn-sm btn-outline-primary">Facebook</a>
-                        <a href="#" class="btn btn-sm btn-outline-info">Twitter</a>
-                        <a href="https://www.instagram.com/kimqi_1326/" class="btn btn-sm btn-outline-danger">Instagram</a>
-                    </p>
+                <div class="info-item">
+                    <h5>Mạng xã hội</h5>
+                    <div class="social-row">
+                        <a href="https://www.facebook.com/kim.quy.337019/">Facebook</a>
+                        <a href="#">Twitter</a>
+                        <a href="https://www.instagram.com/kimqi_1326/">Instagram</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

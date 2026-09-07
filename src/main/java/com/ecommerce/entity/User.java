@@ -35,7 +35,7 @@ public class User {
     private String address;
 
     @Column(nullable = false)
-    private String role = "CUSTOMER"; // CUSTOMER, ADMIN
+    private String role = "CUSTOMER"; // CUSTOMER, STAFF, ADMIN
 
     @Column(columnDefinition = "BOOLEAN DEFAULT 1")
     private Boolean status = true;
