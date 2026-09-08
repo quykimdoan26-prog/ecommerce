@@ -1,8 +1,6 @@
 spring:
   datasource:
-    url: ${{ MySQL.MYSQL_PRIVATE_URL }}
-    username: root
-    password: Kimquy@2006
+    url: ${MYSQL_URL}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
