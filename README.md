@@ -14,70 +14,6 @@ Một dự án web bán hàng chuyên nghiệp được xây dựng với **Spri
 ✅ **Dashboard admin** - Tổng quan thống kê
 ✅ **Database tích hợp** - MySQL với dữ liệu mẫu sẵn
 
----
-
-## 🚀 Hướng Dẫn Cài Đặt & Chạy
-
-### 1️⃣ **Chuẩn Bị Môi Trường**
-- Java JDK 17+ 
-- MySQL 8.0+
-- Maven 3.6+
-- IDE (Eclipse, IntelliJ IDEA hoặc VS Code)
-
-### 2️⃣ **Import Database**
-```bash
-# Mở MySQL Workbench hoặc MySQL CLI
-mysql -u root -p
-
-# Chạy file SQL
-source D:\KimQuy_CNPM\ecommerce\database.sql
-```
-
-### 3️⃣ **Cấu Hình Kết Nối Database**
-Sửa file `src/main/resources/application.yml`:
-```yaml
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/ecommerce?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: root
-    password: YOUR_PASSWORD_HERE  # ← Thay password của bạn
-```
-
-### 4️⃣ **Import Project Vào IDE**
-- **Eclipse**: File → Import → Maven → Existing Maven Projects → Chọn D:\KimQuy_CNPM\ecommerce
-- **IntelliJ**: File → Open → Chọn D:\KimQuy_CNPM\ecommerce
-- **VS Code**: Open Folder → D:\KimQuy_CNPM\ecommerce
-
-### 5️⃣ **Chạy Maven & Ứng Dụng**
-```bash
-# Terminal trong folder D:\KimQuy_CNPM\ecommerce
-
-# Tải dependencies
-mvn clean install
-
-# Chạy ứng dụng
-mvn spring-boot:run
-```
-
-**Ứng dụng sẽ chạy tại:** http://localhost:8080
-
----
-
-## 👥 Tài Khoản Mẫu
-
-### Admin (Quản Lý)
-- **Username:** admin
-- **Password:** password123
-- **Email:** admin@shopnow.com
-- **Link:** http://localhost:8080/admin/dashboard
-
-### Customer (Khách Hàng)
-- **Username:** customer1
-- **Password:** password123
-- **Email:** customer1@email.com
-
----
-
 ## 📁 Cấu Trúc Thư Mục
 
 ```
@@ -149,44 +85,5 @@ ecommerce/
 4. **Tạo Controller** → `src/main/java/com/ecommerce/controller/`
 5. **Tạo View HTML** → `src/main/resources/templates/`
 
----
-
-## 🐛 Troubleshooting
-
-### Lỗi: "Cannot connect to MySQL"
-```
-Kiểm tra:
-✓ MySQL service đang chạy
-✓ Username & Password trong application.yml
-✓ Database "ecommerce" đã tạo
-```
-
-### Lỗi: "Port 8080 already in use"
-```
-# Thay đổi port trong application.yml:
-server:
-  port: 9090
-```
-
-### Lỗi: "Dependency not found"
-```bash
-mvn clean install -U
-```
-
----
-
-## 📞 Liên Hệ & Support
-
-- **Email:** support@shopnow.com
-- **Website:** www.shopnow.com
-- **GitHub:** github.com/shopnow
-
----
-
-## 📄 License
-
-MIT License - Tự do sử dụng cho mục đích thương mại & cá nhân
-
----
 
 **Tạo bởi Quý shopTeam | Version 1.0.0**
