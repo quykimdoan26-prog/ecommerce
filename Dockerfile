@@ -1,14 +1,14 @@
-# Sử dụng JDK 17 (hoặc phiên bản Java tương ứng với project của bạn như 11, 21)
 FROM eclipse-temurin:17-jdk-alpine as build
 WORKDIR /app
 
 # Copy toàn bộ mã nguồn vào container
 COPY . .
 
-# Build ứng dụng bằng Maven
-RUN ./mvnw clean package -DskipTests
+# Sử dụng lệnh mvn trực tiếp thay vì ./mvnw
+RUN apk add --no-cache maven
+RUN mvn clean package -DskipTests
 
-# Chạy ứng dụng
+# Giai đoạn 2: Chạy ứng dụng
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
