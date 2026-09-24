@@ -39,7 +39,6 @@ public class ProductController {
     @GetMapping("/category/{id}")
     public String listProductsByCategory(@PathVariable("id") Long categoryId, Model model) {
         // Gọi service lấy danh sách sản phẩm theo ID danh mục
-        // (Đảm bảo trong ProductService của bạn có hàm này, nếu tên khác hãy sửa lại cho đúng)
         model.addAttribute("products", productService.getProductsByCategory(categoryId)); 
         
         // Vẫn phải truyền categories để giữ menu dropdown không bị trống

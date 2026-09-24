@@ -78,7 +78,7 @@ public class OrderService {
         if (cartItems.isEmpty()) {
             throw new IllegalStateException("Giỏ hàng đang trống");
         }
-
+        
         Order order = new Order();
         order.setUser(user);
         order.setShippingAddress(shippingAddress);
